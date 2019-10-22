@@ -1,0 +1,21 @@
+body{
+  height: 15000px;
+}
+
+div{
+  width: 100px;
+  height: 100px;
+  background-color: crimson;
+}
+
+.ml-auto{
+  margin-left: auto;
+}
+
+.mr-auto{
+  margin-right: auto;
+}
+
+.mx-auto{
+  margin: 0 auto;
+}

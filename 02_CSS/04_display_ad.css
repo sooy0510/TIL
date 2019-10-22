@@ -1,0 +1,17 @@
+div{
+  width: 100px;
+  height: 100px;
+  background-color: crimson;
+  text-align: center;
+  /* 투명도 1:아예 투명 */
+  opacity: 0.5;
+}
+
+
+.none{
+  display: none;
+}
+
+.hidden{
+  visibility: hidden;
+}
