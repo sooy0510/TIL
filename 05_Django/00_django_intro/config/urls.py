@@ -15,7 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from pages import views
+  
 urlpatterns = [
+    path('hello/<str:name>/', views.hello),
+    path('index/', views.index),
+    path('introduce/', views.introduce),
+    path('dinner/', views.dinner),
+    path('image/<int:width>/<int:height>/', views.image),
+    path('times/<int:num1>/<int:num2>/', views.times),
+    path('circle/<int:radius>/', views.circle),
     path('admin/', admin.site.urls),
 ]
