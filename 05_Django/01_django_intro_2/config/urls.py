@@ -14,16 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from sooy import views 
+from django.urls import path, include
 
 urlpatterns = [
-    path('', views.index), 
-    path('throw/', views.throw), 
-    path('catch/', views.catch), 
-    path('art/', views.art), 
-    path('result/', views.result), 
-    path('user_new/', views.user_new), 
-    path('user_create/', views.user_create), 
+    # 사용자가 sooy/ 로 시작하는 경로로 들어오면,
+    # sooy 앱 안의 urls.py에서 처리해라
+    path('sooy/', include('sooy.urls')),
+    path('utilities/', include('utilities.urls')),
     path('admin/', admin.site.urls),
-]
+]  

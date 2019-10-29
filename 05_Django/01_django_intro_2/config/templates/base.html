@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>
+    {% comment %} <!-- Title is here.. --> {% endcomment %}
+    block test
+    {% block title %}
+    {% endblock %}
+  </title>
+  <!-- CSS is here.. -->
+  <link rel="stylesheet" href="{% block css %}{% endblock %}">
+  
+</head>
+<body>
+<!-- 다른 파일에서 이 파일을 상속받게 되면 block 사이의 code가 바뀜 --> 
+  <h1>base.html 템플릿을 상속받았습니다.</h1>
+  <h1>Welcome!</h1>
+  <!-- Content is here.. -->
+  {% block body %}
+  {% endblock %}
+</body>
+</html>
