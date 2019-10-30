@@ -1,2 +1,16 @@
-<h1>안녕하쇼</h1>
-<h1 style="color : red">앙주를 데려가라!!!!!!!!</h1>
+{% extends 'base.html' %}
+
+{% block body %}
+<h1 class="text-center">Articles
+<a href="/articles/new/">[NEW]</a>
+</h1>
+<hr>
+{% for article in articles %}
+<p>
+  [{{ article.pk }}]{{ article.title }}
+</p>
+<a href="/articles/{{ article.pk }}">[DETAIL]</a>
+<hr>
+{% endfor %}
+
+{% endblock  %}
