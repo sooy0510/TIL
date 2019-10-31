@@ -272,7 +272,7 @@ admin.site.register(Article, ArticleAdmin)
 
 - 현재는 `등록`버튼을 누르면 `create.html`로 이동하는 상태
 
-- 등록하면 `index.html`로 이동하도록 바꾸자
+  1. 등록하면 `index.html`로 이동하도록 바꾸자
 
   ```python
   # articles/views.py
@@ -283,6 +283,24 @@ admin.site.register(Article, ArticleAdmin)
   # 경로는 create에 머물러 있다
   #return render(request, 'articles/create.html')
   return redirect('/articles/')
+  ```
+
+  <br>
+
+  2. 등록하면 등록한 데이터의 상세페이지(`/detail`)로 이동하도록 수정
+     - 객체를 `save`하면 `pk`값이 자동으로 부여됨
+
+  ```python
+  # 사용자로부터 데이터를 받아서 DB에 저장하는 함수
+  def create(request):
+    title = request.POST.get('title')
+    content = request.POST.get('content')
+  
+    article = Article(title=title, content=content)
+    # save까지하고 나면 pk값 부여됨
+    article.save()
+    
+    return redirect(f'/articles/{article.pk}')
   ```
 
   
@@ -360,6 +378,257 @@ def detail(request, article_pk):
 <a href="/articles/">[BACK]</a>
 {% endblock %}
 ```
+
+<br>
+
+<br>
+
+<br>
+
+
+
+## 3. DELETE
+
+### 3.1 pk로 게시물 지우기
+
+- 삭제 후에는 `index`페이지로 돌아감
+
+```python
+# articles/views.py
+
+def delete(request, article_pk):
+  article = Article.objects.get(pk=article_pk)
+  article.delete()
+  return redirect('/articles/')
+```
+
+<br>
+
+```html
+<!-- /articles/detail.html -->
+
+{% extends 'base.html' %}
+
+{% block body %}
+<h1 class="text-center">DETAIL</h1>
+<p>글 번호 : {{ article.pk }}</p>
+<p>글 제목 : {{ article.title }}</p>
+<p>글 내용 : {{ article.content }}</p>
+<p>생성 시각 : {{ article.created_at }}</p>
+<p>수정 시각 : {{ article.updated_at }}</p>
+<hr>
+<a href="/articles/">[BACK]</a>
+<a href="/articles/{{ article.pk }}/delete/">[DELETE]</a>
+{% endblock %}
+```
+
+<br>
+
+```python
+# articles/urls.py
+
+path('<int:article_pk>/delete/', views.delete), # DELETE Logic
+```
+
+<br>
+
+<br>
+
+## 4. UPDATE
+
+### 4.1 수정 Form
+
+- `detail.html`에서 `[EDIT]`버튼 누르면 수정폼(`edit.html`)을 전달
+
+  ```python
+  # articles/views.py
+  
+  # 사용자한테 게시글 수정 폼을 전달
+  def edit(request, article_pk):
+    article = Article.objects.get(pk=article_pk)
+    context = {'article':article}
+    return render(request, 'articles/edit.html', context)
+  ```
+
+  <br>
+
+  ```html
+  <!-- edit.html -->
+  
+  {% extends 'base.html' %}
+  
+  {% block body %}
+  <h1 class="text-center">EDIT</h1>
+  <form class="text-center" action="/articles/{{ article.pk }}/update/" method="POST">
+    {% csrf_token %}
+    TITLE: <input type="text" name="title" value={{ article.title }}><br>
+    CONTENT: <textarea name="content" cols="30" rows="10">{{ article.content }}</textarea><br>
+    <input type="submit" value="수정">
+  </form>
+  <hr>
+  <!-- 뒤로가기 버튼 -->
+  <a href="/articles/{{ article.pk }}/">[BACK]</a>
+  {% endblock  %}
+  ```
+
+  <br>
+
+  ```python
+  # articles/urls.py
+  
+  ...
+  path('<int:article_pk>/edit/', views.edit), # UPDATE Logic - 폼 전달
+  ...
+  ```
+
+<br>
+
+<br>
+
+### 4.2 DB에 수정정보 저장
+
+- DB에 UPDATE 후 상세페이지로 **REDIRECT** 
+
+  ```python
+  # articles/views.py
+  
+  # 수정 내용 전달받아서 DB에 저장(반영)
+  def update(request, article_pk):
+    article = Article.objects.get(pk=article_pk)
+    article.title = request.POST.get('title')
+    article.content = request.POST.get('content')
+    article.save()
+    return redirect(f'/articles/{article.pk}/')
+  ```
+
+  <br>
+
+  ```python
+  # articles/urls.py
+  
+  path('<int:article_pk>/update/', views.update), # UPDATE Logic - DB저장
+  ```
+
+  
+
+<br>
+
+<br>
+
+## 5. URL patterns 수정
+
+### 5.1 기존 URL patterns
+
+- 각 애플리케이션의 view함수마다 접근 url 을 일일이 지정해주어야함
+
+  ```python
+  # 기존 articles/urls.py
+  
+  urlpatterns = [
+    # 일반적으로 view함수와 똑같이 name바꿈
+    path('', views.index, name='index'),  # READ Logic - Index
+    path('new/', views.new, name='new'),  # CREATE Logic - 사용자에게 폼 전달
+    path('create/', views.create, name='create'),  # CREATE Logic - 데이터베이스에 저장
+    path('<int:article_pk>/', views.detail, name='detail'),  # READ Logic - Detail
+    path('<int:article_pk>/delete/', views.delete, name='delete'), # DELETE Logic
+    # articles/9/delete 
+    path('<int:article_pk>/edit/', views.edit, name='edit'), # UPDATE Logic-폼 전달
+    path('<int:article_pk>/update/', views.update, name='update'), # UPDATE Logic-DB저장
+  ]
+  ```
+
+  <br>
+
+  ```html
+  <!-- /aritcles/index.html -->
+  
+  {% extends 'base.html' %}
+  
+  {% block body %}
+  <h1 class="text-center">Articles
+      
+  <!-- url templete code 이용 : url 경로의 관리가 쉽다 -->
+  <a href="{% url 'articles:new' %}">[NEW]</a>
+  </h1>
+  <hr>
+  {% for article in articles %}
+  <p>
+    [{{ article.pk }}]{{ article.title }}
+  </p>
+  {% comment %} <a href="/articles/{{ article.pk }}">[DETAIL]</a> {% endcomment %}
+  <a href="{% url 'articles:detail' article.pk %}">[[DETAIL]]</a>
+  <hr>
+  {% endfor %}
+  
+  {% endblock  %}
+  ```
+
+  
+
+<br>
+
+<br>
+
+
+
+### 5.2 수정 URL patterns
+
+- url에 `name`을 지정해줘서 좀 더 편리하게 접근가능
+
+- 일반적으로 view함수와 똑같이 `name`을 바꾼다!
+
+- `app_name `추가해주면 똑같은 `name`으로 지정한 view함수를 사용하는 각각의 애플리케이션의 view함수에 접근이 가능하다
+
+  - `{% url '앱이름:url name' %}`
+
+  - `{% url 'articles:new' %}`
+
+- html에서는 장고에 내장되어있는 `url templete code` 이용
+
+  - 인자 없을 때 : `{% url 'articles:new' %}`
+
+  - 넘겨줄 인자 있을 때(순서대로) : `{% url 'articles:detail' article.pk %}`
+
+  ```python
+  # 수정 articles/urls.py
+  
+  app_name = 'articles'
+  urlpatterns = [
+    # 일반적으로 view함수와 똑같이 name바꿈
+    path('', views.index, name='index'),  # READ Logic - Index
+    path('new/', views.new, name='new'),  # CREATE Logic - 사용자에게 폼 전달
+    path('create/', views.create, name='create'),  # CREATE Logic - 데이터베이스에 저장
+    path('<int:article_pk>/', views.detail, name='detail'),  # READ Logic - Detail
+    path('<int:article_pk>/delete/', views.delete, name='delete'), # DELETE Logic
+    # articles/9/delete 
+    path('<int:article_pk>/edit/', views.edit, name='edit'), # UPDATE Logic - 폼 전달
+    path('<int:article_pk>/update/', views.update, name='update'), # UPDATE Logic-DB저장
+  ]
+  ```
+
+  <br>
+
+  ```html
+  {% extends 'base.html' %}
+  
+  {% block body %}
+  <h1 class="text-center">Articles
+  <!-- url templete code 이용 : url 경로의 관리가 쉽다 -->
+  <a href="{% url 'articles:new' %}">[NEW]</a>
+  </h1>
+  <hr>
+  {% for article in articles %}
+  <p>
+    [{{ article.pk }}]{{ article.title }}
+  </p>
+  <a href="{% url 'articles:detail' article.pk %}">[[DETAIL]]</a>
+  <hr>
+  {% endfor %}
+  
+  {% endblock  %}
+  ```
+
+  
 
 <br>
 

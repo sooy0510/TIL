@@ -2,14 +2,16 @@
 
 {% block body %}
 <h1 class="text-center">Articles
-<a href="/articles/new/">[NEW]</a>
+<!-- url templete code 이용 : url 경로의 관리가 쉽다 -->
+<a href="{% url 'articles:new' %}">[NEW]</a>
 </h1>
 <hr>
 {% for article in articles %}
 <p>
   [{{ article.pk }}]{{ article.title }}
 </p>
-<a href="/articles/{{ article.pk }}">[DETAIL]</a>
+{% comment %} <a href="/articles/{{ article.pk }}">[DETAIL]</a> {% endcomment %}
+<a href="{% url 'articles:detail' article.pk %}">[[DETAIL]]</a>
 <hr>
 {% endfor %}
 
