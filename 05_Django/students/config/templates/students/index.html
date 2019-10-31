@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h1 class="text-center">Students들을 보여드릴게요</h1>
+{% for student in students %}
+<p>
+  [{{ student.pk }}] 이름 : {{ student.name }} - 생일 : {{ student.birthday }}
+</p>
+<hr>
+{% endfor %}
+<a href="{% url 'students:new' %}">[NEW]</a>
+{% endblock  %}

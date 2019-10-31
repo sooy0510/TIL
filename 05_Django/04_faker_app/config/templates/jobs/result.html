@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h1 class=text-center>{{ name }}은 전생에...</h1>
+<h1 class=text-center>{{ past_job }}이었습니다!!</h1>
+<img src="{{ img_url }}" alt="이미지" width="700px" height="700">
+<a href="{% url 'jobs:index' %}">[HOME]</a>
+{% endblock  %}

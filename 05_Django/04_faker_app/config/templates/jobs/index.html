@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{% for job in jobs %}
+<p>
+  [{{ job.pk }}] 이름 : {{ job.name }} - 전생직업 : {{ job.past_job }}
+</p>
+{% endfor %}
+<a href="{% url 'jobs:new' %}">[NEW]</a>
+{% endblock  %}

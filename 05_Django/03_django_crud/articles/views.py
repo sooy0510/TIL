@@ -24,7 +24,11 @@ def create(request):
   # render는 html파일만 가져와서 띄워주는 함수
   # 경로는 create에 머물러 있다
   #return render(request, 'articles/create.html')
-  return redirect(f'/articles/{article.pk}/')
+  #return redirect(f'/articles/{article.pk}/')    # 1. 하드코딩
+  return redirect('articles:detail', article.pk)  # 2. URL namespace
+
+  # .html 파일 내에서 '{% url %} 템플릿 태그' 사용햇을때(헷갈림 주의!)
+  # <a href="{% url 'articles:detail' article.pk %}">[[DETAIL]]</a>
 
 
 
@@ -38,7 +42,7 @@ def detail(request, article_pk):
 def delete(request, article_pk):
   article = Article.objects.get(pk=article_pk)
   article.delete()
-  return redirect('/articles/')
+  return redirect('articles:index')
 
 
 # 사용자한테 게시글 수정 폼을 전달
@@ -54,4 +58,5 @@ def update(request, article_pk):
   article.title = request.POST.get('title')
   article.content = request.POST.get('content')
   article.save()
-  return redirect(f'/articles/{article.pk}/')
+  #return redirect(f'/articles/{article.pk}/')
+  return redirect('articles:detail', article.pk)

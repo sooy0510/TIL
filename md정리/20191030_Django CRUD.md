@@ -172,6 +172,48 @@ $ python manage.py migrate
 
 <br>
 
+
+
+### 0.6 django- extensions
+
+
+
+1. 설치
+
+   ```bash
+   $ pip install django-extensions
+   ```
+
+2. 앱 등록
+
+   - third party app이기 때문에 `settings.py`에 등록
+
+   ```python
+   INSTALLED_APPS = [
+       # Local apps
+       'articles',
+       
+       #Third party apps
+       'django_extensions',
+       
+       # Django apps(장고 기본 앱들)
+       'django.contrib.admin',
+       'django.contrib.auth',
+       'django.contrib.contenttypes',
+       'django.contrib.sessions',
+       'django.contrib.messages',
+       'django.contrib.staticfiles',
+   ]
+   ```
+
+3. Shell 실행
+
+   ```bash
+   $ python manage.py shell_plus
+   ```
+
+   
+
 <br>
 
 ## 1. CREATE
@@ -573,6 +615,30 @@ path('<int:article_pk>/delete/', views.delete), # DELETE Logic
 
 ### 5.2 수정 URL patterns
 
+#### URL 코딩방식
+
+>#### .py  
+>
+>- 인자 넘길 때 `,`로 구분
+>
+>return redirect(f'/articles/{article.pk}/')    # 1. 하드코딩
+>
+>return redirect('articles:detail', article.pk)  # 2. URL namespace
+
+
+
+> #### .html
+>
+> .html 파일 내에서 '{% url %} 템플릿 태그' 사용햇을때(헷갈림 주의!)
+>
+>- 인자 넘길 때 `,` 사용 X
+>
+>```html
+> <a href="{% url 'articles:detail' article.pk %}">[[DETAIL]]</a>
+>```
+
+<br>
+
 - url에 `name`을 지정해줘서 좀 더 편리하게 접근가능
 
 - 일반적으로 view함수와 똑같이 `name`을 바꾼다!
@@ -581,9 +647,9 @@ path('<int:article_pk>/delete/', views.delete), # DELETE Logic
 
   - `{% url '앱이름:url name' %}`
 
-  - `{% url 'articles:new' %}`
+  - ex`{% url 'articles:new' %}`
 
-- html에서는 장고에 내장되어있는 `url templete code` 이용
+- html에서는 장고에 내장되어있는 `url templete tag` 이용
 
   - 인자 없을 때 : `{% url 'articles:new' %}`
 
@@ -609,6 +675,8 @@ path('<int:article_pk>/delete/', views.delete), # DELETE Logic
   <br>
 
   ```html
+  <!-- /aritcles/index.html -->
+  
   {% extends 'base.html' %}
   
   {% block body %}
@@ -625,9 +693,30 @@ path('<int:article_pk>/delete/', views.delete), # DELETE Logic
   <hr>
   {% endfor %}
   
-  {% endblock  %}
+{% endblock  %}
   ```
-
+  
+  <br>
+  
+  ```python
+  # articles/views.py
+  
+  # 사용자로부터 데이터를 받아서 DB에 저장하는 함수
+  def create(request):
+    title = request.POST.get('title')
+    content = request.POST.get('content')
+  
+    article = Article(title=title, content=content)
+    # save까지하고 나면 pk값 부여됨
+    article.save()
+    
+    # render는 html파일만 가져와서 띄워주는 함수
+    # 경로는 create에 머물러 있다
+    #return render(request, 'articles/create.html')
+    #return redirect(f'/articles/{article.pk}/')    # 1. 하드코딩
+    return redirect('articles:detail', article.pk)  # 2. URL namespace
+  ```
+  
   
 
 <br>
