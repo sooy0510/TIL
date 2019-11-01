@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block body %}
+
+<h1 class="text-center">DETAIL</h1>
+<div style="float:left; width:30%;">
+  {% comment %} <ol>
+      <li>영화 번호 : {{ movie.pk }}</li>
+      <li>영화 제목 : {{ movie.title }}</li>
+      <li>영화 제목 : {{ movie.title_en }}</li>
+      <li>관객 수 : {{ movie.audience }}</li>
+      <li>개봉일 : {{ movie.open_date }}</li>
+      <li>장르 : {{ movie.genre }}</li>
+      <li>등급 : {{ movie.watch_grade }}</li>
+      <li>점수 : {{ movie.score }}</li>
+  </ol> {% endcomment %}
+    <p>영화 번호 : {{ movie.pk }}</p>
+    <p>영화 제목 : {{ movie.title }}</p>
+    <p>영화 제목 : {{ movie.title_en }}</p>
+    <p>관객 수 : {{ movie.audience }}</p>
+    <p>개봉일 : {{ movie.open_date }}</p>
+    <p>장르 : {{ movie.genre }}</p>
+    <p>등급 : {{ movie.watch_grade }}</p>
+    <p>점수 : {{ movie.score }}</p>
+</div>
+<div float: left; width: 70%;>
+  <img src="{{ movie.poster_url }}" width=500 height=700 alt="">
+</div>
+<hr>
+<div>
+  <p style="word-wrap: break-word; word-break: keep-all;"> {{ movie.description }}</p>
+</div>
+<hr>
+
+<input type="button" value="목록" onClick="location.href='{% url 'movies:index' %}'">
+<input type="button" value="수정" onClick="location.href='{% url 'movies:edit' movie.pk %}'">
+<input type="button" value="삭제" onClick="location.href='{% url 'movies:delete' movie.pk %}'">
+{% comment %} <a href="{% url 'movies:index' %}">[목록]</a> 
+<a href="{% url 'movies:edit' movie.pk %}">[수정]</a>
+<a href="{% url 'movies:delete' movie.pk %}">[삭제]</a> {% endcomment %}
+{% endblock  %}

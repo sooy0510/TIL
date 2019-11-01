@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block header %}
+    <h1>이곳은 <strong>영화</strong>를 등록해주는 곳입니다</h1>
+{% endblock  %}
+
+{% block body %}
+<form action="{% url 'movies:create' %}" method='POST'>
+  {% csrf_token %}
+  <label for="title">제목</label>
+  <input type="text" name="title"><br>
+  <label for="title_en">영어 제목</label>
+  <input type="text" name="title_en"><br>
+  <label for="audience">관객 수</label>
+  <input type="text" name="audience" onkeypress="onlyNumber();"><br> 
+  <label for="open_date">개봉일</label>
+  <input type="date" name="open_date" style="color:black;"><br>
+  <label for="genre">장르</label>
+  <input type="text" name="genre"><br>
+  <label for="watch_grade">등급</label>
+  <input type="text" name="watch_grade"><br>
+  <label for="score">점수</label>
+  <input type="text" name="score"><br>
+  <label for="poster_url">링크</label>
+  <input type="text" name="poster_url"><br>
+  <label for="description">설명</label>
+  <textarea name="description" cols="40" rows="10" ></textarea><br>
+  <hr>
+  <input type="submit" value="제출☆">
+</form>
+{% endblock  %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block header %}
+    <h1>이곳은 <strong>영화</strong>를 수정하는 곳입니다</h1>
+{% endblock  %}
+
+{% block body %}
+<form action="{% url 'movies:update' movie.pk %}" method='POST'>
+  {% csrf_token %}
+  <label for="title">제목</label>
+  <input type="text" name="title" value="{{ movie.title }}"><br>
+  <label for="title_en">영어 제목</label>
+  <input type="text" name="title_en" value="{{ movie.title_en }}"><br>
+  <label for="audience">관객 수</label>
+  <input type="text" name="audience" onkeypress="onlyNumber();" value="{{ movie.audience }}"><br> 
+  <label for="open_date">개봉일</label>
+  <input type="date" name="open_date" value="{{ movie.open_date }}" style="color:black;"><br>
+  <label for="genre">장르</label>
+  <input type="text" name="genre" value="{{ movie.genre }}"><br>
+  <label for="watch_grade">등급</label>
+  <input type="text" name="watch_grade" value="{{ movie.watch_grade }}"><br>
+  <label for="score">점수</label>
+  <input type="text" name="score" value="{{ movie.score }}"><br>
+  <label for="poster_url">링크</label>
+  <input type="text" name="poster_url" value="{{ movie.poster_url }}"><br>
+  <label for="description">설명</label>
+  <textarea name="description" cols="40" rows="10"> {{ movie.description }} </textarea><br>
+  <hr>
+  <input type="submit" value="수정☆">
+</form>
+  <!-- 뒤로가기 버튼 -->
+  <a href="{% url 'movies:detail' movie.pk %}">[BACK]</a>
+{% endblock  %}
