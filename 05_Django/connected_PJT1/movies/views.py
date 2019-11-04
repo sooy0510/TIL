@@ -9,47 +9,38 @@ def index(request):
 
 
 # 영화정보 생성 Form 
-def new(request):
-  return render(request, 'movies/new.html')
+# def new(request):
+#   return render(request, 'movies/new.html')
 
 # 영화정보 생성
 def create(request):
-  title = request.POST.get('title')
-  print(title)
-  title_en = request.POST.get('title_en')
-  print(title_en)
-  audience = request.POST.get('audience')
-  print(audience)
-  open_date = request.POST.get('open_date')
-  print(open_date)
-  genre = request.POST.get('genre')
-  print(genre)
-  watch_grade = request.POST.get('watch_grade')
-  print(watch_grade)
-  score = request.POST.get('score')
-  print(score)
-  poster_url = request.POST.get('poster_url')
-  print(poster_url)
-  description = request.POST.get('description')
-  print(description)
-
-  movie = Movie(title=title, 
-                title_en=title_en, 
-                audience=audience, 
-                open_date=open_date, 
-                genre=genre, 
-                watch_grade=watch_grade, 
-                score=score,
-                poster_url=poster_url,
-                description=description)
-                
-  
-  movie.save()
-
-  #context = {'movie':movie}
-
-  return redirect('movies:detail', movie.pk)
-  #return render('movies/detail/{ movie.pk }')
+  # POST 요청일 경우 -> 
+  if request.method == 'POST':
+    title = request.POST.get('title')
+    title_en = request.POST.get('title_en')
+    audience = request.POST.get('audience')
+    open_date = request.POST.get('open_date')
+    genre = request.POST.get('genre')
+    watch_grade = request.POST.get('watch_grade')
+    score = request.POST.get('score')
+    poster_url = request.POST.get('poster_url')
+    description = request.POST.get('description')
+    movie = Movie(title=title, 
+                  title_en=title_en, 
+                  audience=audience, 
+                  open_date=open_date, 
+                  genre=genre, 
+                  watch_grade=watch_grade, 
+                  score=score,
+                  poster_url=poster_url,
+                  description=description)
+                  
+    
+    movie.save()
+    return redirect('movies:detail', movie.pk)
+  # GET 요청일 경우 -> 사용자에게 폼 보여주기
+  else:
+    return render(request, 'movies/create.html')
 
 
 # 영화 상세정보를 가져오는 함수
