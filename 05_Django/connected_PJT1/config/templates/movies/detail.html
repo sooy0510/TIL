@@ -36,8 +36,12 @@
 <hr>
 
 <input type="button" value="목록" onClick="location.href='{% url 'movies:index' %}'">
-<input type="button" value="수정" onClick="location.href='{% url 'movies:edit' movie.pk %}'">
-<input type="button" value="삭제" onClick="location.href='{% url 'movies:delete' movie.pk %}'">
+<input type="button" value="수정" onClick="location.href='{% url 'movies:update' movie.pk %}'">
+<!--<input type="button" value="삭제" onClick="location.href='{% url 'movies:delete' movie.pk %}'"> -->
+<form action="{% url 'movies:delete' movie.pk %}" method="POST" style="display:inline">
+  {% csrf_token %}
+  <input type="submit" value="삭제" onClick="return confirm('정말 삭제하겠습니까?')">
+</form>
 {% comment %} <a href="{% url 'movies:index' %}">[목록]</a> 
 <a href="{% url 'movies:edit' movie.pk %}">[수정]</a>
 <a href="{% url 'movies:delete' movie.pk %}">[삭제]</a> {% endcomment %}
