@@ -7,11 +7,16 @@ app_name = 'articles'
 urlpatterns = [
   # 일반적으로 view함수와 똑같이 name바꿈
   path('', views.index, name='index'),    # READ Logic - Index
-  path('new/', views.new, name='new'),  # CREATE Logic - 사용자에게 폼 전달
-  path('create/', views.create, name='create'),    # CREATE Logic - 데이터베이스에 저장
+  # path('new/', views.new, name='new'),  # CREATE Logic - 사용자에게 폼 전달
+  # path('create/', views.create, name='create'),    # CREATE Logic - 데이터베이스에 저장
+  # new&create RESTful 하게 로직 변경
+  path('create/', views.create, name='create'),
   path('<int:article_pk>/', views.detail, name='detail'),  # READ Logic - Detail
-  path('<int:article_pk>/delete/', views.delete, name='delete'), # DELETE Logic
-  # articles/9/delete 
-  path('<int:article_pk>/edit/', views.edit, name='edit'), # UPDATE Logic - 폼 전달
+  # path('<int:article_pk>/edit/', views.edit, name='edit'), # UPDATE Logic - 폼 전달
+  # path('<int:article_pk>/update/', views.update, name='update'), # UPDATE Logic - DB저장
+  # edit&update RestFul 하게 로직 변경
   path('<int:article_pk>/update/', views.update, name='update'), # UPDATE Logic - DB저장
+  path('<int:article_pk>/delete/', views.delete, name='delete'), # DELETE Logic
+  # comments
+  path('<int:article_pk>/comments_create/', views.comments_create, name='comments_create'),
 ]

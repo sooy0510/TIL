@@ -1,10 +1,19 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block body %}
+
+<!-- Static file 저장해서 제일 좋아하는 사진 띄우기 -->
+<div class="text-center">
+  <img src="{% static 'articles/images/chavata.jpg' %}" alt="img" width='500' height='500'>
+<br>
+</div>
+
 <h1 class="text-center">Articles
 <!-- url templete code 이용 : url 경로의 관리가 쉽다 -->
-<a href="{% url 'articles:new' %}">[NEW]</a>
+<a href="{% url 'articles:create' %}">[NEW]</a>
 </h1>
+
 <hr>
 {% for article in articles %}
 <p>

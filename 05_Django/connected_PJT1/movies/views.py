@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Movie
+from .models import Movie, Comment
 
 # Create your views here.
 def index(request):
@@ -46,7 +46,11 @@ def create(request):
 # 영화 상세정보를 가져오는 함수
 def detail(request, movie_pk):
   movie = Movie.objects.get(pk=movie_pk)
-  context = {'movie':movie}
+  comments = movie.comment_set.all()
+  context = {
+    'movie':movie, 
+    'comments':comments
+  }
   return render(request,'movies/detail.html', context)
 
 # 영화 수정Form
@@ -78,10 +82,27 @@ def update(request, movie_pk):
     return render(request,'movies/update.html', context)
 
 
-# 영화 삭제
+# 영화 삭제 뷰 함수
 def delete(request, movie_pk):
   movie = Movie.objects.get(pk=movie_pk)
   movie.delete()
   return redirect('movies:index')
 
-  
+# 댓글 생성 뷰 함수
+def comments_create(request, movie_pk):
+  movie = Movie.objects.get(pk=movie_pk)
+  if request.method == 'POST':
+    content = request.POST.get('content')
+    comment = Comment(movie=movie, content=content)
+    comment.save()
+    return redirect('movies:detail', movie_pk) 
+  else:
+    return redirect('movies:detail', movie_pk)
+
+
+# 댓글 삭제 뷰 함수
+def comments_delete(request, movie_pk, comment_pk):
+  if request.method == 'POST':
+    comment = Comment.objects.get(pk=comment_pk)
+    comment.delete()
+  return redirect('movies:detail', movie_pk)

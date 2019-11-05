@@ -45,4 +45,26 @@
 {% comment %} <a href="{% url 'movies:index' %}">[목록]</a> 
 <a href="{% url 'movies:edit' movie.pk %}">[수정]</a>
 <a href="{% url 'movies:delete' movie.pk %}">[삭제]</a> {% endcomment %}
+<hr>
+<!-- 댓글 작성 Form -->
+{{ comments|length }}개의 댓글이 있습니다. <br>
+<!--{{ movie.comment_set.all|length }}개의 댓글이 있습니다.-->
+<!--{{ comments.count }} => 는 count 메서드를 호출해서 데이터베이스에 쿼리를 한번 더 날려서 정보를 가져오므로,
+ 미세하지만 속도가 조금 느리다는 단점이 있다-->
+{% for comment in comments %}
+  <p style="width:80%;display:inline;height=2.8em;"> {{ comment.content }} </p>
+  <form action="{% url 'movies:comments_delete' movie.pk comment.pk %}" method='POST' style="display:inline;padding-left:20px;">
+    {% csrf_token %}
+    <input type="submit" value="댓글삭제" onClick="return confirm('정말 삭제하겠습니까?')" style="background-color:#a71d39;height:2.0em;padding:0;line-height: 0">
+  </form>
+  <br>
+  <!-- for문 query_set이 비어있을 때 출력 -->
+  {% empty %}
+    <p>댓글이 없어요!</p>
+{% endfor %}
+<form action="{% url 'movies:comments_create' movie.pk %}" method="POST">
+  {% csrf_token %}
+  <input type="text" name="content" style="width:80%;display:inline">
+  <input type="submit" value="댓글등록">
+</form>
 {% endblock  %}
