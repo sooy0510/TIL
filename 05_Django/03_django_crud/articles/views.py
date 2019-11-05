@@ -18,8 +18,9 @@ def create(request):
   if request.method == 'POST':
     title = request.POST.get('title')
     content = request.POST.get('content')
+    image = request.FILES.get('image')
 
-    article = Article(title=title, content=content)
+    article = Article(title=title, content=content, image=image)
     # save까지하고 나면 pk값 부여됨
     article.save()
     
