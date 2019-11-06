@@ -10,4 +10,5 @@
 <p>{{ article.content }}</p>
 <hr>
 <a href="{% url 'articles:index' %}">[HOME]</a>
+<a href="{% url 'articles:update' article.pk %}">[EDIT]</a>
 {% endblock  %}

@@ -6,12 +6,16 @@
 <!-- RESTful하게 통합했으면 form action은 get요청을 보낸 주소로 보내진다 -->
 <form action="" method="POST">
 {% csrf_token %}
-<label for="title">TITLE</label>
+<!-- <label for="title">TITLE</label>
 <input type="text" name="title" max_length="300"><br><br>
 <label for="content">CONTENT</label><br>
 <textarea name="content" cols="80" rows="10"></textarea>
-<hr>
+<hr>-->
+
+<!-- 각각의 input 태그를 p태그로 감싸라-->
+{{ form.as_p }}
 <input type="submit" value="등록☆">
 </form>
-
+<hr>
+<a href="{% url 'articles:index' %}">[BACK]</a>
 {% endblock  %}
