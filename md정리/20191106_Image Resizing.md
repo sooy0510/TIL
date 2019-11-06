@@ -570,7 +570,10 @@ class ArticleForm(forms.ModelForm):
 def update(request, article_pk):
   article= get_object_or_404(Article, pk=article_pk)
   if request.method == 'POST':
-    ...
+    form = ArticleForm(request.POST, instance=article)
+    if form.is_valid():
+      article = form.save()
+      return redirect('articles:detail', article.pk)
   else:
     form = ArticleForm(instance=article)
     context = {'form':form}
@@ -578,6 +581,14 @@ def update(request, article_pk):
     # form의 형태가 같아 create 템플릿을 여러곳에서 사용하기 때문에 create.html -> form.html으로 rename해 공용 템플릿으로 이용한다 
     return render(request, 'articles/form.html', context)
 ```
+
+<br>
+
+<br>
+
+### 5.6 create.html => form.html
+
+- `form`의 형태가 같아 `create` 템플릿을 여러곳에서 사용하기 때문에 `create` 템플릿을 `form` 으로 변경해 공용템플릿으로 이용한다.
 
 <br>
 
@@ -614,6 +625,4 @@ def update(request, article_pk):
     }
     return render(request, 'articles/detail.html', context)
   ```
-
-  
 

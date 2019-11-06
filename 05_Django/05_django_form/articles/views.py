@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from IPython import embed
 from .models import Article
 from .forms import ArticleForm
-
+ 
 # Create your views here.
 def index(request):
   articles = Article.objects.all()
@@ -52,6 +52,15 @@ def detail(request, article_pk):
     'article':article,
   }
   return render(request, 'articles/detail.html', context)
+
+
+def delete(request, article_pk):
+  article = get_object_or_404(Article, pk=article_pk)
+  if request.method == 'POST':
+    article.delete()
+    return redirect('articles:index')
+  else:
+    return redirect('articles:detail', article.pk)
 
 
 def update(request, article_pk):
