@@ -421,8 +421,7 @@ INSTALLED_APPS = [
 
 ```bash
 In [1]: form
-Out[1]: <ArticleForm bound=True, valid=Unknown, fields
-=(title;content)>
+Out[1]: <ArticleForm bound=True, valid=Unknown, fields=(title;content)>
 
 In [2]: request.POST
 Out[2]: <QueryDict: {'csrfmiddlewaretoken':['gxCjOxEektFeWAuWsdLGB0ivimT9Vnf4a3nEvy2hqYIaxLMSgpL94WvkyLW7Lool'], 'title': ['888'], 'content': ['8번째 게시물!']}>
@@ -459,7 +458,11 @@ In [8]: exit()
 
 
 
+<br>
 
+<br>
+
+<br>
 
 ## 5. Django ModelForm
 
@@ -576,7 +579,41 @@ def update(request, article_pk):
     return render(request, 'articles/form.html', context)
 ```
 
+<br>
 
+<br>
 
-## 6. 404에러
+<br>
+
+## 6. get_object_or_404
+
+### 6.1 500에러
+
+> 500에러는 내부 서버 오류로, '서버에 오류가 발생하여 요청을 처리할 수 없다'는 의미다
+
+- ex) articles/356775 와 같이 존재하지 않는 상세정보 페이지를 요청하면 500에러가 발생한다
+
+<br>
+
+<br>
+
+### 6.2 404에러
+
+>  사용자의 요청이 잘못된 경우 '서버에 존재하지 않는 페이지에 대한 요청' 이라는 의미를 가진 404에러를 리턴
+
+- 500에러를 리턴하면 "선생님, 깃헙 폭파됐는데요?"라는 말이 나올거고, 404에러를 리턴하면 "아, 선생님이 주소를 잘못 줬거나 내가 잘못 쳤구나..."라는 말이 나올 것
+
+  <br>
+
+  ```python
+  def detail(request, article_pk):
+    #article = Article.objects.get(pk=article_pk)
+    article = get_object_or_404(Article, pk=article_pk)
+    context = {
+      'article':article,
+    }
+    return render(request, 'articles/detail.html', context)
+  ```
+
+  
 
