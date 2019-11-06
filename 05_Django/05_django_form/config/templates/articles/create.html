@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h1>CREATE</h1>
+<!-- <form action="{% url 'articles:create' %}" method="POST"></form> -->
+<!-- RESTful하게 통합했으면 form action은 get요청을 보낸 주소로 보내진다 -->
+<form action="" method="POST">
+{% csrf_token %}
+<label for="title">TITLE</label>
+<input type="text" name="title" max_length="300"><br><br>
+<label for="content">CONTENT</label><br>
+<textarea name="content" cols="80" rows="10"></textarea>
+<hr>
+<input type="submit" value="등록☆">
+</form>
+
+{% endblock  %}
