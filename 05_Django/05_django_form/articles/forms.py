@@ -72,6 +72,7 @@ class ArticleForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
   class Meta:
     model = Comment
+    # article 까지 넣어주면 사용자가 선택해서 바꿀수도 있음. 로직의 논리에 맞지 않는다!
     fields = ('content',)
 
  

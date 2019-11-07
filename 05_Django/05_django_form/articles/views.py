@@ -1,3 +1,5 @@
+# http관련한 decorators import하기
+from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
 from IPython import embed
 from .models import Article, Comment
@@ -49,20 +51,26 @@ def detail(request, article_pk):
   #article = Article.objects.get(pk=article_pk)
   article = get_object_or_404(Article, pk=article_pk)
   comment_form = CommentForm()
+  comments = article.comment_set.all()
   context = {
     'article':article,
     'comment_form':comment_form,
+    'comments':comments,
   }
   return render(request, 'articles/detail.html', context)
 
 
+# post요청만 들어올때 require_post 사용가능
+@require_POST
 def delete(request, article_pk):
   article = get_object_or_404(Article, pk=article_pk)
-  if request.method == 'POST':
-    article.delete()
-    return redirect('articles:index')
-  else:
-    return redirect('articles:detail', article.pk)
+  # if request.method == 'POST':
+  #   article.delete()
+  #   return redirect('articles:index')
+  # else:
+  #   return redirect('articles:detail', article.pk)
+  article.delete()
+  return redirect('articles:index')
 
 
 def update(request, article_pk):
@@ -91,7 +99,23 @@ def update(request, article_pk):
     #return render(request, 'articles/create.html', context)
     return render(request, 'articles/form.html', context)
 
+@require_POST
 def comments_create(request, article_pk):
   article = get_object_or_404(Article, pk=article_pk)
-  if request.method == 'POST':
-    pass
+  comment_form = CommentForm(request.POST)
+  if comment_form.is_valid():
+    # save() 메서드 -> 선택 인자 : (기본값) commit=True
+    # comment의 article정보를 넣어줘야 하는데 정보가 없다면 일단 막아줘야한다
+    # commit=False 하면 DB에 바로 저장되는 것을 막아준다. 객체 하나만 만들어진 상태
+    comment = comment_form.save(commit=False)
+    comment.article = article
+    comment.save()
+    return redirect('articles:detail', article.pk)
+
+
+
+@require_POST
+def comments_delete(request, article_pk, comment_pk):
+  comment = get_object_or_404(Comment, pk=comment_pk)
+  comment.delete()
+  return redirect('articles:detail', article_pk)

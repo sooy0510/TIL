@@ -5,7 +5,12 @@
 <a href="{% url 'articles:create' %}">New</a>
 <hr>
 {% for article in articles %}
-<p>{{ article.pk }} : <a href="{% url 'articles:detail' article.pk %}">{{ article.title }}</a></p>
+<p>{{ article.pk }} : <a href="{% url 'articles:detail' article.pk %}">{{ article.title }}</a>
+<form action="{% url 'articles:delete' article.pk %}" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="삭제" onClick="return confirm('정말 삭제하겠습니까?')">
+</form>
+</p>
 <hr>
 {% endfor %}
 {% endblock  %}
