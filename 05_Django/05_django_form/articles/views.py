@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from IPython import embed
-from .models import Article
-from .forms import ArticleForm
+from .models import Article, Comment
+from .forms import ArticleForm, CommentForm
  
 # Create your views here.
 def index(request):
@@ -24,7 +24,7 @@ def create(request):
     # 폼 인스턴스를 생성하고, 전달받은 데이터를 채운다
     # 인스턴스에 데이터를 채워서, 유효성 검증을 진행한다
     form = ArticleForm(request.POST)
-    # embed()
+    #embed()
     if form.is_valid():
       # form이 dict형태로 바뀌어져서 들어옴
       # cleaned_data를 통해 디셔너리 안 데이터를 검증한다
@@ -48,8 +48,10 @@ def create(request):
 def detail(request, article_pk):
   #article = Article.objects.get(pk=article_pk)
   article = get_object_or_404(Article, pk=article_pk)
+  comment_form = CommentForm()
   context = {
     'article':article,
+    'comment_form':comment_form,
   }
   return render(request, 'articles/detail.html', context)
 
@@ -82,6 +84,14 @@ def update(request, article_pk):
     # 1. GET -> 초기값을 폼에 넣어서 사용자에게 던져줌
     # 2. POST -> is_valid가 False가 리턴됐을 때, 오류 메시지 포함해서 사용자에게 던져줌
 
-    context = {'form':form}
+    context = {
+      'form':form, 
+      'article':article 
+    }
     #return render(request, 'articles/create.html', context)
     return render(request, 'articles/form.html', context)
+
+def comments_create(request, article_pk):
+  article = get_object_or_404(Article, pk=article_pk)
+  if request.method == 'POST':
+    pass
