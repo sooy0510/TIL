@@ -40,7 +40,7 @@
 
   - 수정상태에서 `뒤로가기`를 누르면 `detail`  페이지로 돌아가야하고 `article` 객체가 필요한데 현재 `update` 함수에서 form 띄울 때 보내주는 `article`객체가 없는 상태
 
-    > ![1573094633919](images/1573094633919.png)
+    > ![1573130136820](images/1573130136820.png)
 
     <br>
 
@@ -132,6 +132,8 @@
   ```django
   <!-- form.html -->
   
+  {% load bootstrap4 %}
+  ...
   <form action="" method="POST">
     {% csrf_token %}
     {% bootstrap_form form layout='inline' %}
@@ -147,7 +149,7 @@
 
 - 실행화면
 
-  > ![1573099840399](images/1573099840399.png)
+  > ![1573130241118](images/1573130241118.png)
 
 <br>
 

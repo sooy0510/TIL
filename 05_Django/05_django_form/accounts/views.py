@@ -30,7 +30,7 @@ def login(request):
   # 이미 login되어있는 사용자가 다시 로그인 시도할때
   if request.user.is_authenticated:
     return redirect('articles:index')
-
+ 
   if request.method == 'POST':
     # login은 session 정보가 있기때문에 request 넘겨줘야함
     form = AuthenticationForm(request, request.POST)
