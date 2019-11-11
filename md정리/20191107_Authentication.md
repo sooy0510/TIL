@@ -600,3 +600,15 @@ def change_password(request):
   return render(request, 'accounts/auth_form.html', context)
 ```
 
+
+
+
+
+<br>
+
+<br>
+
+<br>
+
+# 2. Auth Form 합치기
+

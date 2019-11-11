@@ -1,4 +1,5 @@
 {% load bootstrap4 %}
+{% load gravatar %}
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -13,7 +14,7 @@
   <div class="container">
   <!-- 로그인했을 경우 -->
   {% if user.is_authenticated %}
-    <h2>어서오세요, {{ user.username }}</h2>
+    <h2><img src="https://s.gravatar.com/avatar/{{ user.email|makemd5 }}?s=80&d=mp" alt="profile">어서오세요, {{ user.username }}</h2>
     <a href="{% url 'accounts:logout' %}">로그아웃</a>
     <a href="{% url 'accounts:update' %}">정보수정</a>
     <a href="{% url 'accounts:change_password' %}">암호변경</a>
