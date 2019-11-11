@@ -612,3 +612,68 @@ def change_password(request):
 
 # 2. Auth Form 합치기
 
+<br>
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+#### accounts 템플릿 폴더내의 `create`, `login`, `update` 의 템플릿 파일들이 거의 동일하다 
+
+### *=> `auth_form` 으로 통합! (create.html 변경)*
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+<br>
+
+- `auth_form.html`
+
+  ```django
+  <!-- auth_form.html -->
+  
+  {% extends 'base.html' %}
+  {% load bootstrap4 %}
+  
+  {% block body %}
+  {% if request.resolver_match.url_name == 'signup' %}
+    <h1>회원가입</h1>
+  {% elif request.resolver_match.url_name == 'login' %}
+    <h1>로그인</h1>
+  {% elif request.resolver_match.url_name == 'update' %}
+    <h1>회원정보수정</h1>
+  {% else %}
+    <h1>비밀번호변경</h1>
+  {% endif %}
+  <hr>
+  ...
+  {% endblock  %} 
+  ```
+
+<br>
+
+- view 함수에서 `create`, `login`, `update` form을 render하는 함수들 모두 `auth_form` render하도록 수정
+
+  ```python
+  # accounts/views.py
+  
+  # 회원가입
+  def signup(request):
+    ...
+    context = {'form':form}
+    return render(request, 'accounts/auth_form.html', context) 
+  
+  
+  # 로그인
+  def login(request):
+    ...
+    context = { 'form':form }
+    return render(request, 'accounts/auth_form.html', context) 
+  
+  
+  # 회원정보 수정
+  @login_required
+  def update(request):
+    ...
+    context = {'form':form}
+    return render(request, 'accounts/auth_form.html', context)
+  ```
+
+   
