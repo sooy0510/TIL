@@ -2,13 +2,12 @@
 
 {% block body %}
 
-
 <!-- Main -->
   <section id="main">
 
     <!-- Thumbnails -->
       <section class="thumbnails">
-        {% for movie in movies %}
+        {% comment %} {% for movie in movies %}
           <div class="wrapper">
             <a href="{% url 'movies:detail' movie.pk %}">
               <img src="{{ movie.poster_url }}" alt="" />
@@ -16,10 +15,33 @@
               <h3>{{ movie.score }}</h3>
             </a>
           </div>
-        {% endfor %}
+        {% endfor %} {% endcomment %}
       </section> 
 
-      
+      <script type="text/javascript">
+        $(document).ready(function() { 
+        {% for movie in movies %}
+          {% if forloop.counter|divisibleby:3 or forloop.counter == 1 %}  
+            var div = "";
+            div += '<div class="wrapper">';
+            div += '<a href="{% url 'movies:detail' movie.pk %}">';
+            div += '<img src="{{ movie.poster_url }}" alt="" />';
+            div += '<h3>{{ movie.title }}</h3>';
+            div += '<h3>{{ movie.score }}</h3></a></div>';
+            $(".thumbnails").append(div);
+          {% else %}
+            var div = "";
+            div += '<a href="{% url 'movies:detail' movie.pk %}">';
+            div += '<img src="{{ movie.poster_url }}" alt="" />';
+            div += '<h3>{{ movie.title }}</h3>';
+            div += '<h3>{{ movie.score }}</h3></a>';
+            $(".wrapper:last").append(div);
+          {% endif %}
+        {% endfor %}
+        });
+  
+      </script>
+
       <!-- <section class="thumbnails">
         {% for movie in movies %}
           <div class="wrapper">

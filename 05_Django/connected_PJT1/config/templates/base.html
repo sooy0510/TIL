@@ -9,16 +9,19 @@
 <html>
 	<head>
 		<title>MOVIE LIST</title>
+    <link rel="shortcut icon" href="{% static 'movies/favicon/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'movies/favicon/favicon.ico' %}" type="image/x-icon">
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="{% static 'assets/css/main.css' %}" />
+    <script src="{% static 'movies/js/jquery.min.js' %}"></script>
+		<link rel="stylesheet" href="{% static 'movies/css/main.css' %}" />
 	</head>
 	<body>
     <!-- Wrapper -->
     <div id="wrapper">
           <!-- Header -->
         <header id="header">
-          <span class="avatar"><a href="{% url 'movies:index' %}"><img src="{% static 'images/cat.jpg' %}" alt="" /></a></span>
+          <span class="avatar"><a href="{% url 'movies:index' %}"><img src="{% static 'movies/images/cat.jpg' %}" alt="" /></a></span>
           {% block header %}
           <h1>이곳은 <strong>영화</strong>를 소개해주는 곳입니다</h1>
           <h1 class='text-center'><a href="{% url 'movies:create' %}">영화 등록</a></h1>
@@ -43,10 +46,10 @@
   </div>
 
 		<!-- Scripts -->
-			<script src="{% static 'assets/js/jquery.min.js' %}"></script>
+			{% comment %} <script src="{% static 'movies/js/jquery.min.js' %}"></script> {% endcomment %}
 			{% comment %} <script src="{% static 'assets/js/jquery.poptrox.min.js' %}"></script> {% endcomment %}
-			<script src="{% static 'assets/js/skel.min.js' %}"></script>
-			<script src="{% static 'assets/js/main.js' %}"></script>
+			<script src="{% static 'movies/js/skel.min.js' %}"></script>
+			<script src="{% static 'movies/js/main.js' %}"></script>
 
 	</body>
 </html>
