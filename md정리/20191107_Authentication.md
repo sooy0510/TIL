@@ -4,6 +4,25 @@
 
 <br>
 
+## 1.0 세션(Session)
+
+- 클라이언트가 서버에 접속하면, 서버가 특정한 sessiong_id를 발급한다. 클라이언트는 session_id를 쿠키를 사용해 저장한다
+- 클라이언트가 서버측 여러 페이지에 이동할 때마다, 해당 쿠키(session_id)를 이용해서 서버에 session_id를 전달한다
+- 따라서 서버는 페이지가 바뀌더라도 같은 사용자임을 인지할 수 있다
+
+<br>
+
+- 쿠키 vs 세션
+  - 쿠키 : 클라이언트 로컬에 파일로 저장
+  - 세션 : 서버에 저장(session_id는 쿠키 형태로 클라이언트 로컬에 저장됨)
+
+- embed로 확인해보기
+  - request.session._session
+
+
+
+<br>
+
 ## 1.1 Accounts 앱 추가
 
 - 기존 앱에서 구현해도 되지만, 장고에서는 기능 단위로 애플리케이션을 나누는 것이 일반적이므로 `accounts` 라는 새로운 앱을 만들어보자
@@ -27,7 +46,10 @@
 
 <br>
 
-### 회원가입
+##  1.3 SignUp
+
+- 회원가입 로직은 CRUD 중에 'CREATE'에 가깝다
+- `class User`는 이미 장고가 만들어 두었고, User 클래스와 연동되는 ModelForm인 `UserCreationForm` 도 장고가 이미 준비해두었다
 
 - 로그인/회원가입을 하고, 로그인한 사용자의 정보를 나타내도록 `base` 템플릿 수정
 
@@ -77,7 +99,7 @@
 
 - Django에서는 사용자가 session을 몰라도 기능을 사용할 수 있도록 `AuthenticationForm` 을 제공한다
 
-- `request,user.is_authenticated` 
+- `request.user.is_authenticated` 
 
   - 이미 login 되어있는 사용자는 회원가입을 또 할 필요가 없으므로 `index` 로 redirect
   - 회원가입을 하면 form data를 DB에 저장하고 바로 user 객체를 만들어 `auto_login`을 시킨 뒤 바로 `index` 로 redirect
@@ -136,7 +158,13 @@
 
 <br>
 
-### 로그인
+## 1.4 Login
+
+- 장고에서 로그인하는 것은 session을 create하는 것과 같다
+  - 장고는 session에 대한 매커니즘을 생각하지 않아도 쉽게 사용할 수 있다
+  - session 사용자가 로그인을 하면, 사용자가 로그아웃을 하거나 정해진 일정한 시간이 지나기 전까지는 계속 유지됨
+- User를 인증하는 ModelForm : `AuthenticationForm`
+  - `AuthenticationForm(request, request.POST)`
 
 - 이미 login 되어있는 사용자가 다시 로그인 시도할 때는 바로 `index` 로 redirect
 
@@ -199,9 +227,11 @@
 
 <br>
 
-### 로그아웃
+## 1.5 Logout
 
-- 현재 서버에서 보고 있는 session에서 login 정보를 지워버린다
+- `auth_logout(request)`
+
+  - 현재 유지하고 있는 session을 서버에서 DELETE하는 로직
 
   ```python
   # views.py
@@ -214,3 +244,145 @@
   ```
 
   
+
+<br>
+
+<br>
+
+<br>
+
+## 1.6 `login_required` 데코레이터
+
+- 로그인하지 않은 사용자의 경우 `settings.LOGIN_URL`에 설정된 절대 경로로 리다이렉트 된다
+
+  - 장고에서 설정한 `LOGIN_URL` 의 기본 경로는 `/accounts/login/` 이다
+
+  - 우리가 앱 이름을 `accounts`라고 했던 이유들 중 하나
+
+  - login_required 경로 커스터마이징
+
+    - 기본값은 '/accounts/login/'
+
+    - ```python
+      # settings.py
+      
+      LOGIN_URL = '/members/login/'
+      ```
+
+      
+
+- login_required를 사용했을 경우, 주소창에 특이한 쿼리스트링이 붙는다
+
+- **"`next`" 쿼리 스트링 파라미터**
+
+  - `@login_required`는 기본적으로 성공한 뒤에 사용자를 어디로 보낼지(리다이렉트)에 대한 경로를 next라는 파라미터에 저장한다
+  - 사용자가 접근했던 페이지가 반드시 로그인이 필요한 페이지였기 때문에, 일단 로그인 페이지로 강제로 보낸 다음에 로그인을 끝내고 나면 **원래 요청했던 주소로 보내주기 위해 경로를 keep** 해둔다
+  - 문제점 : 우리가 따로 설정해주지 않으면, view에 설정해둔 redirect경로로 이동한다. next에 담긴 경로로 이동시키기 위해 코드를 바꾸어야 한다
+
+- 새 article 생성시 비로그인 상태면 로그인창으로 이동
+
+  - articles/views.py
+
+    ```python
+    from django.views.decorators.http import require_POST
+    # 장고가 기본적으로 accounts로 설정함
+    from django.contrib.auth.decorators import login_required
+    
+    @login_required
+    def create(request):
+      # POST 요청 => 데이터를 받아서 DB에 저장
+      if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+          article = form.save()
+        return redirect('articles:detail', article.pk)
+      else:
+        form = ArticleForm()
+        
+      context = {'form':form }
+      return render(request, 'articles/form.html', context)
+    ```
+
+  - accounts/views.py
+
+    ```python
+    def login(request):
+      # 이미 login되어있는 사용자가 다시 로그인 시도할때
+      if request.user.is_authenticated:
+        return redirect('articles:index')
+     
+      if request.method == 'POST':
+        # login은 session 정보가 있기때문에 request 넘겨줘야함
+        form = AuthenticationForm(request, request.POST)
+        #embed()
+        if form.is_valid():
+          # AuthenticationForm이 들고잇는 사용자 정보를 들고온다
+          auth_login(request, form.get_user())
+          #return redirect('articles:index')
+          return redirect(request.GET.get('next') or 'articles:index')
+      else:
+        form = AuthenticationForm()
+      
+      context = { 'form':form }
+      return render(request, 'accounts/login.html', context)
+    ```
+
+    
+
+<br><br>
+
+<br>
+
+## 1.6 SignOUt(회원탈퇴)
+
+- CRUD 로직에서 User 테이블에서 User 레코드 하나를 삭제시키는 DELETE로직과 흡사하다
+
+- 로그인 된 상태에서만 회원 탈퇴 링크를 만들어서 접근할 수 있도록 한다
+
+  ```python
+  # accounts/views.py
+  
+  from django.views.decorators.http import require_POST
+  
+  @require_POST
+  def delete(request):
+    # 지금 접속하고 있는 user 바로 삭제
+    request.user.delete()
+    return redirect('articles:index')
+  ```
+
+  <br>
+
+  ```django
+  <!-- base.html -->
+  
+  <!-- 로그인했을 경우 -->
+    {% if user.is_authenticated %}
+      <h2>어서오세요, {{ user.username }}</h2>
+      <a href="{% url 'accounts:logout' %}">로그아웃</a>
+      <form action="{% url 'accounts:delete' %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="회원탈퇴">
+      </form>
+  ```
+
+  > ![1573439449916](images/1573439449916.png)
+
+  <br>
+
+  - bootstrap 적용
+
+  ```django
+  <!-- base.html -->
+  
+  <!-- 로그인했을 경우 -->
+    {% if user.is_authenticated %}
+      <h2>어서오세요, {{ user.username }}</h2>
+      <a href="{% url 'accounts:logout' %}">로그아웃</a>
+      <form action="{% url 'accounts:delete' %}" method="POST" style="display:inline;">
+        {% csrf_token %}
+        <input type="submit" value="회원탈퇴" class="btn btn-danger">
+      </form>
+  ```
+
+  > ![1573439543472](images/1573439543472.png)

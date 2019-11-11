@@ -1,5 +1,7 @@
 # http관련한 decorators import하기
 from django.views.decorators.http import require_POST
+# 장고가 기본적으로 accounts로 설정함
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from IPython import embed
 from .models import Article, Comment
@@ -7,6 +9,7 @@ from .forms import ArticleForm, CommentForm
  
 # Create your views here.
 def index(request):
+  #embed()
   articles = Article.objects.all()
   context = {
     'articles':articles,
@@ -14,6 +17,8 @@ def index(request):
   return render(request, 'articles/index.html',context)
 
 
+@login_required
+#@require_POST
 def create(request):
   # POST 요청 => 데이터를 받아서 DB에 저장
   if request.method == 'POST':
@@ -26,7 +31,6 @@ def create(request):
     # 폼 인스턴스를 생성하고, 전달받은 데이터를 채운다
     # 인스턴스에 데이터를 채워서, 유효성 검증을 진행한다
     form = ArticleForm(request.POST)
-    #embed()
     if form.is_valid():
       # form이 dict형태로 바뀌어져서 들어옴
       # cleaned_data를 통해 디셔너리 안 데이터를 검증한다
@@ -61,15 +65,17 @@ def detail(request, article_pk):
 
 
 # post요청만 들어올때 require_post 사용가능
+#@login_required 동시에 @require_POST 사용하고 싶으면 로직내에 is_authenticated로 검증
 @require_POST
 def delete(request, article_pk):
-  article = get_object_or_404(Article, pk=article_pk)
-  # if request.method == 'POST':
-  #   article.delete()
-  #   return redirect('articles:index')
-  # else:
-  #   return redirect('articles:detail', article.pk)
-  article.delete()
+  if request.user.is_authenticated:
+    article = get_object_or_404(Article, pk=article_pk)
+    # if request.method == 'POST':
+    #   article.delete()
+    #   return redirect('articles:index')
+    # else:
+    #   return redirect('articles:detail', article.pk)
+    article.delete()
   return redirect('articles:index')
 
 
@@ -101,21 +107,23 @@ def update(request, article_pk):
 
 @require_POST
 def comments_create(request, article_pk):
-  article = get_object_or_404(Article, pk=article_pk)
-  comment_form = CommentForm(request.POST)
-  if comment_form.is_valid():
-    # save() 메서드 -> 선택 인자 : (기본값) commit=True
-    # comment의 article정보를 넣어줘야 하는데 정보가 없다면 일단 막아줘야한다
-    # commit=False 하면 DB에 바로 저장되는 것을 막아준다. 객체 하나만 만들어진 상태
-    comment = comment_form.save(commit=False)
-    comment.article = article
-    comment.save()
-    return redirect('articles:detail', article.pk)
+  if request.user.is_authenticated:
+    article = get_object_or_404(Article, pk=article_pk)
+    comment_form = CommentForm(request.POST)
+    if comment_form.is_valid():
+      # save() 메서드 -> 선택 인자 : (기본값) commit=True
+      # comment의 article정보를 넣어줘야 하는데 정보가 없다면 일단 막아줘야한다
+      # commit=False 하면 DB에 바로 저장되는 것을 막아준다. 객체 하나만 만들어진 상태
+      comment = comment_form.save(commit=False)
+      comment.article = article
+      comment.save()
+  return redirect('articles:detail', article.pk)
 
 
 
 @require_POST
 def comments_delete(request, article_pk, comment_pk):
-  comment = get_object_or_404(Comment, pk=comment_pk)
-  comment.delete()
+  if request.user.is_authenticated:
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    comment.delete()
   return redirect('articles:detail', article_pk)
