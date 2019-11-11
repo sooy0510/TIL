@@ -19,7 +19,7 @@ def index(request):
   articles = Article.objects.all()
   context = {
     'articles':articles,
-    'gravatar_url':gravatar_url,
+    #'gravatar_url':gravatar_url,
   }
   return render(request, 'articles/index.html',context)
 
