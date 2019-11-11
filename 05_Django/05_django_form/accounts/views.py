@@ -4,7 +4,10 @@ from django.views.decorators.http import require_POST
 
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from .forms import CustomUserChangeForm
+from django.contrib.auth.decorators import login_required
 
 # Authentication(인증) -> 신원 확인
 # - 자신이 누구라고 주장하는 사람의 신원을 확인하는 것
@@ -26,7 +29,7 @@ def signup(request):
     form = UserCreationForm()
 
   context = {'form':form}
-  return render(request, 'accounts/signup.html', context)
+  return render(request, 'accounts/auth_form.html', context) 
 
 
 def login(request):
@@ -48,7 +51,7 @@ def login(request):
     form = AuthenticationForm()
   
   context = { 'form':form }
-  return render(request, 'accounts/login.html', context)
+  return render(request, 'accounts/auth_form.html', context)
 
 
 def logout(request):
@@ -61,3 +64,29 @@ def delete(request):
   # 지금 접속하고 있는 user 바로 삭제
   request.user.delete()
   return redirect('articles:index')
+
+# 회원정보 수정
+@login_required
+def update(request):
+  if request.method == 'POST':
+    form = CustomUserChangeForm(request.POST, instance=request.user)
+    if form.is_valid():
+      form.save()
+      return redirect('articles:index')
+  else:
+    form = CustomUserChangeForm(instance=request.user)
+  context = {'form':form}
+  return render(request, 'accounts/auth_form.html', context)
+
+@login_required
+def change_password(request):
+  if request.method == 'POST':
+    form = PasswordChangeForm(request.user, request.POST)
+    if form.is_valid():
+      user = form.save()
+      update_session_auth_hash(request,user)
+      return redirect('articles:index')
+  else:
+    form = PasswordChangeForm(request.user)
+  context = {'form':form}
+  return render(request, 'accounts/auth_form.html', context)

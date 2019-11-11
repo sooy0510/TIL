@@ -333,7 +333,7 @@
 
 <br>
 
-## 1.6 SignOUt(회원탈퇴)
+## 1.7 SignOut(회원탈퇴)
 
 - CRUD 로직에서 User 테이블에서 User 레코드 하나를 삭제시키는 DELETE로직과 흡사하다
 
@@ -386,3 +386,217 @@
   ```
 
   > ![1573439543472](images/1573439543472.png)
+
+<br>
+
+<br>
+
+<br>
+
+## 1.8 Update(회원정보수정)
+
+- `UserChangeForm`
+
+  -  User를 수정하는 ModelForm
+
+  ```python
+  # accounts/views.py
+  
+  # 회원정보 수정
+  def update(request):
+    if request.method == 'POST':
+  	pass
+    else:
+      form = UserChangeForm(instance=request.user)
+    context = {'form':form}
+    return render(request, 'accounts/update.html', context)
+  ```
+
+  <br>
+
+  ```django
+  <!-- accounts/update.html -->
+  
+  {% extends 'base.html' %}
+  {% load bootstrap4 %}
+  
+  {% block body %}
+  <h1>회원정보수정</h1>
+  <hr>
+  <form action="" method="POST">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons submit='수정' reset='초기화' %}
+    {% endbuttons %}
+  </form>
+  {% endblock  %}
+  ```
+
+  <br>
+
+  ```html
+  <!-- base.html -->
+  
+  <!-- 로그인했을 경우 -->
+  {% if user.is_authenticated %}
+  <h2>어서오세요, {{ user.username }}</h2>
+  <a href="{% url 'accounts:logout' %}">로그아웃</a>
+  <a href="{% url 'accounts:update' %}">정보수정</a>
+  ```
+
+  <br>
+
+  - 수정해선 안될 정보들이 너무 많이 뜬다..
+
+  > ![1573447577249](images/1573447577249.png)
+
+<br>
+
+<br>
+
+- `CustomUserChangeForm`
+
+  - 수정할 수 있는 `fields`를 설정하기 위해 UserChangeForm을 customizing 하겠다
+
+  - `accounts`앱 내에 `forms.py` 생성
+
+    - UserChangeForm => User클래스 => AbstractUser 클래스
+
+    - User클래스를 바로 가져와서 사용하는 것이 아니라 get_user_model()을 사용해서 User 클래스를 참조
+    - Django공식문서 :  https://github.com/django/django/blob/master/django/contrib/auth/models.py 
+
+    ```python
+    from django import forms
+    from django.contrib.auth import get_user_model
+    from django.contrib.auth.forms import UserChangeForm
+    
+    # UserChangeForm상속받아서 customizing
+    class CustomUserChangeForm(UserChangeForm):
+      class Meta:
+        model = get_user_model()
+        # 이정도만 사용자가 수정할 수 있도록 변경
+        fields = ('email', 'last_name', 'first_name',)
+    ```
+
+    <br>
+
+  ```python
+  # accounts/views.py
+  
+  from .forms import CustomUserChangeForm
+  from django.contrib.auth.decorators import login_required
+  
+  @login_required
+  def update(request):
+    if request.method == 'POST':
+      form = CustomUserChangeForm(request.POST, instance=request.user)
+      if form.is_valid():
+        form.save()
+        return redirect('articles:index')
+    else:
+      # 넘겨줄 form에 맞는 정보가 이미 존재할 때 instance에 넘겨줌
+      form = CustomUserChangeForm(instance=request.user)
+    context = {'form':form}
+    return render(request, 'accounts/update.html', context)
+  ```
+
+  <br>
+
+  > ![1573447014082](images/1573447014082.png)
+
+<br>
+
+<br>
+
+<br>
+
+## 1.9 비밀번호 변경
+
+- `PasswordChangeForm`
+
+  - 사용자의 비밀번호를 변경할 수 있는 ModelForm
+
+  ```python
+  # accounts/views.py
+  
+  from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+  
+  @login_required
+  def change_password(request):
+    if request.method == 'POST':
+      form = PasswordChangeForm(request.user, request.POST)
+      if form.is_valid():
+        user = form.save()
+        return redirect('articles:index')
+    else:
+      form = PasswordChangeForm(request.user)
+    context = {'form':form}
+    return render(request, 'accounts/change_password.html', context)
+  ```
+
+  <br>
+
+  ```django
+  <!-- change_password.html -->
+  
+  {% extends 'base.html' %}
+  {% load bootstrap4 %}
+  
+  {% block body %}
+  <h1>암호변경</h1>
+  <form action="" method="POST">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons submit='변경하기' reset='초기화' %}
+    {% endbuttons %}
+  </form>
+  
+  {% endblock  %}
+  ```
+
+  <br>
+
+  ```django
+  <!-- base.html -->
+  
+  <!-- 로그인했을 경우 -->
+  {% if user.is_authenticated %}
+  <h2>어서오세요, {{ user.username }}</h2>
+  <a href="{% url 'accounts:logout' %}">로그아웃</a>
+  <a href="{% url 'accounts:update' %}">정보수정</a>
+  <a href="{% url 'accounts:change_password' %}">암호변경</a>
+  ```
+
+  <br>
+
+  > ![1573450050167](images/1573450050167.png)
+
+  
+
+### 문제점
+
+- 비밀번호 변경은 잘 되는데, 변경이 끝나면 로그인이 풀려버린다
+- 자동으로 로그아웃이 돼버린 이유는 비밀번호가 변경되면서 기존 세션과의 회원 인증 정보가 일치하지 않게 되었기 때문이다
+
+### *=> update_session_auth_hash 를 사용*
+
+```python
+# accounts/views.py
+
+from django.contrib.auth import update_session_auth_hash
+
+@login_required
+def change_password(request):
+  if request.method == 'POST':
+    form = PasswordChangeForm(request.user, request.POST)
+    if form.is_valid():
+      user = form.save()
+      ######### save한 뒤에 user넘겨주기 #############
+      update_session_auth_hash(request,user)
+      return redirect('articles:index')
+  else:
+    form = PasswordChangeForm(request.user)
+  context = {'form':form}
+  return render(request, 'accounts/auth_form.html', context)
+```
+
