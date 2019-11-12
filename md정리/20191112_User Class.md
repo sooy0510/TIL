@@ -30,9 +30,9 @@
 
 ### Django의 실행순서
 
-```markdown
-Django가 처음 프로젝트를 실행시키면 settings.py의 INSTALLED_APPS 에 있는 클래스를 다 가져오고 APP하나하나의 models.py에 있는 모델들을 import 시킨다. 따라서 view 함수 등에서 클래스를 사용하려면 import 된 후에 사용 가능하다. 예를 들어 아래 사진과 같이 User Class를 더 위에 있는 articles APP에서 get_user_model()로 가져오려고 하면 아직 User Class가 import 되기 전이기 때문에 에러가 뜬다. 만약 APP의 등록 순서와 상관없이 클래스를 참조하고 싶으면 settings.AUTH_USER_MODEL을 사용하자!
-```
+> Django가 처음 프로젝트를 실행시키면 settings.py의 INSTALLED_APPS 에 있는 클래스를 다 가져오고 APP하나하나의 models.py에 있는 모델들을 import 시킨다. 따라서 view 함수 등에서 클래스를 사용하려면 import 된 후에 사용 가능하다. 
+>
+> 예를 들어 아래 사진과 같이 User Class를 더 위에 있는 articles APP에서 get_user_model()로 가져오려고 하면 아직 User Class가 import 되기 전이기 때문에 에러가 뜬다. 만약 APP의 등록 순서와 상관없이 클래스를 참조하고 싶으면 settings.AUTH_USER_MODEL을 사용하자!
 
 <br>
 
@@ -218,11 +218,13 @@ user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
   <br>
 
-  - Django가 만들어준 DB형식에 맞추어 저장하면 article 객체를 구할 필요가 없다 
+  Django가 만들어준 DB형식에 맞추어 저장하면 article 객체를 구할 필요가 없다 
 
-  ​	=> `get_object_or_404`삭제
+  ​		=> `get_object_or_404`삭제
 
-  - redirect 할 때도 `comments_create` 인자를 바로 넘겨주면 된다
+  redirect 할 때도 `comments_create` 인자를 바로 넘겨주면 된다
+
+  <br>
 
   ```python
   # articles/views.py
