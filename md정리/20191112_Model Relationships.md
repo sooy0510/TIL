@@ -223,6 +223,10 @@
 
   <br>
 
+  ![1573554305493](images/1573554305493.png)
+
+  <br>
+
 - **중개모델(class Reservation)**을 만들어서 Doctor와 Patient를 이어주는 예약 정보를 담아보자
 
   - Doctor와 Patient를 Reservation으로만 중개!
@@ -358,6 +362,8 @@
 
 - 이제 Patient입장에서는 `patient.doctors.all()`과 같은 형태로 쉽게 Doctor 정보를 가져올 수 있다
 - 마찬가지로 Doctor 입장에서도 `doctor.patients.all()`과 같은 형태로 Patient 정보를 가져올 수 있게끔, `related_name` 옵션을 사용해보자 (**역참조**가 가능하도록 수정!)
+
+![1573554265672](images/1573554265672.png)
 
 <br>
 
