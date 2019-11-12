@@ -5,6 +5,7 @@
 <a href="{% url 'articles:create' %}">New</a>
 <hr>
 {% for article in articles %}
+<p>작성자 : {{ article.user }}</p>
 <p>{{ article.pk }} : <a href="{% url 'articles:detail' article.pk %}">{{ article.title }}</a>
 <form action="{% url 'articles:delete' article.pk %}" method="POST">
   {% csrf_token %}
