@@ -144,6 +144,8 @@
 
 - `INSTALLED_APPS` 추가하기!
 
+- Doctor, Patient 모델 생성
+
   ```python
   # models.py
   
@@ -201,7 +203,7 @@
 
   <br>
 
-  - **Patient**
+- **Patient** 테이블
 
   > ![1573547734706](images/1573547734706.png)
 
@@ -218,6 +220,8 @@
 - 1:N으로만 구현하려니 예약 정보 시스템을 표현하기 어렵다
 
   - 예를 들어, Patient가 다른 Doctor에게 진료를 받고자 할 때, 기존 기록을 지우지 않으려면 **새로운 Patient 인스턴스를 생성**해야 한다
+
+  <br>
 
 - **중개모델(class Reservation)**을 만들어서 Doctor와 Patient를 이어주는 예약 정보를 담아보자
 
@@ -270,7 +274,7 @@
 
   <br>
 
-  - **Reservation**
+- **Reservation**
 
   > ![1573549447784](images/1573549447784.png)
 
@@ -287,6 +291,8 @@
 - patient 입장에서 중개 모델을 거쳐서 `reservation_set` 형태로 예약정보를 가져오는 것은 너무 불편하다
 
   - 마찬가지로 Doctor도 `reservation_set `형태로 예약 정보를 먼저 불러온 뒤에 Patient 정보를 빼내 올 수 있다
+
+  <br>
 
 - through 옵션을 통해 Doctor 정보를 중개 모델을 거치지 않고, 다이렉트로 가져와보자
 
