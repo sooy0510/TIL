@@ -155,6 +155,8 @@
 - 좋아요 버튼 추가!
 
   ```django
+  <!-- articles/_article.html -->
+  
   <div class="col-12 col-md-6 mb-3">
     <div class="card">
       <div class="card-body">
@@ -178,6 +180,21 @@
     </div>
   </div>
   ```
+
+  <br>
+
+  ```django
+  <!-- base.html -->
+  
+  ...
+    <!-- Bootstrap -->
+    {% bootstrap_css %}
+    <!-- FontAwesome -->
+    <script src="https://kit.fontawesome.com/7c49c03442.js" crossorigin="anonymous"></script>
+  ...
+  ```
+
+  
 
   <br>
 
@@ -359,7 +376,40 @@
 
 <br>
 
-### 3.2 View & URL
+### 3.2 Admin
+
+- Admin 페이지에서 users목록을 보여주기 위해 `admin.py` 에서 모델을 등록해준다
+
+- django에서 `UserAdmin class`를 제공하기 때문에 그대로 import해서 사용하면 된다
+
+  ```python
+  # accounts/admin
+  
+  from django.contrib import admin
+  # 장고가 미리 admin class 만들어놓음
+  from django.contrib.auth.admin import UserAdmin
+  from .models import User
+  
+  # Register your models here.
+  admin.site.register(User, UserAdmin)
+  ```
+
+  <br>
+
+  > ![1573643936101](images/1573643936101.png)
+
+<br>
+
+<br>
+
+### 3.3 View & URL
+
+- **get_obejct_or_404** 
+
+  - 첫번째 인자 :  어떤 클래스에서 객체를 가져올지
+  - 두번째 인자 : 클래스의 몇 번째 객체인지( `pk`) , pk는 각 객체를 구분해주는 역할을 한다
+
+  <br>
 
 - 게시글 작성자의 팔로워 명단에 접속중인 **유저가 있는 경우** - Unfollow
 
@@ -393,25 +443,141 @@
     return redirect('articles:detail', article_pk)
   ```
 
+<br>
+
+<br>
+
+### 3.4 Template 분리
+
+> 상세보기 화면에서 상단에 게시물 작성자의 정보를 표시하는 템플릿을 `_follow.html`으로 분리할 것이다
+
+<br>
+
+- bootstrap의 **jumbotron** 사용
+
+  ```django
+  <!-- articles/detail.html -->
   
+  {% extends 'base.html' %}
+  
+  {% block body %}
+  {% include 'articles/_follow.html' %}
+  
+  <h1>DETAIL</h1>
+  ...
+  ```
+
+  <br>
+
+  ```django
+  <!-- articles/_follow.html -->
+  
+  <div class="jumbotron">
+    <h1 class="display-4">{{ person.username }}</h1>
+    <p class="lead">
+      팔로워: {{ person.followers.all|length }}명 | 팔로잉: {{ person.followings.all|length }}명
+    </p>
+    <h1>팔로워 다 나와라</h1>
+    {% for follower in person.followers.all %}
+      {{ follower.username }}
+    {% empty %}
+      팔로워가 없어요..
+    {% endfor %}
+    <hr class="my-4">
+    {% if user != article.user %}
+      <a class="btn btn-primary btn-lg" href="{% url 'articles:follow' article.pk person.pk %}" role="button">
+        {% if user in person.followers.all %}
+          UnFollow
+        {% else %}
+          Follow
+        {% endif %}
+      </a>
+    {% endif %}
+  </div>
+  ```
+
+<br>
+
+<br>
+
+<br>
+
+## 4. Navbar
+
+> 현재 base 템플릿에 로그아웃, 마이페이지, 암호변경, 회원탈퇴 등 모든 기능들이 다 나와있어서 지저분해보인다. bootstrap의 Navbar을 이용해서 템플릿상단을 깔끔하게 만들어보자!
+
+<br>
+
+- bootstrap **Navbar** 사용
+
+  ```django
+  <!-- articles/_nav.html -->
+  
+  {% load gravatar %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'articles:index' %}">
+      <img class="rounded-circle mr-2" src="https://s.gravatar.com/avatar/{{ user.email|makemd5 }}?s=80&d=mp" alt="">
+      Hello, {{ user.username }}
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        {% if user.is_authenticated %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'accounts:logout' %}">로그아웃</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'accounts:profile' user.username %}">마이페이지</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'accounts:update' %}">정보수정</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'accounts:change_password' %}">암호변경</a>
+          </li>
+          <form action="{% url 'accounts:delete' %}" method="POST" style="display: inline;">
+            {% csrf_token %}
+            <input type="submit" value="회원탈퇴" class="btn btn-danger">
+          </form>
+        <!-- 비회원일 경우 -->
+        {% else %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'accounts:login' %}">로그인</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'accounts:signup' %}">회원가입</span></a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+  ```
+
+  <br>
+
+  ```django
+  <!-- base.html -->
+  
+  ...
+  <body> 
+    {% include 'articles/_nav.html' %}
+    <div class="container">
+      {% block body %}
+      {% endblock  %}
+    </div>
+  
+    {% bootstrap_javascript jquery='full' %}
+  </body>
+  ...
+  ```
+
+  <br>
+
+  > ![1573644503515](images/1573644503515.png)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-admin
-
-nav
 
 내가 팔로우 하는 사람의 글 + 내가 작성한 글
 
