@@ -305,6 +305,10 @@
 
 ## 3. Follow
 
+> 상세보기 화면에서 글 작성자의 정보(이름, 팔로워수, 팔로잉수)를 보여주고 follow, unfollow가 가능한 버튼을 만들어보자
+
+<br>
+
 - Follow는 User와 User의 M:N 관계다
 - 장고가 제공하고 있는 User 모델을 대체해서 사용한다. 처음부터 User 모델을 만드는게 아니라, 장고가 개발자들이 자신만의 User 모델을 만들 수 있도록 제공해준다
   - `AbstractUser`
@@ -317,5 +321,98 @@
 
 - `AbstractUser`모델을 상속받아서 `ManyToManyField` 로 User간 관계를 설정해준다
 
+  ```python
+  # accounts/models.py
+  
+  from django.db import models
+  from django.conf import settings
+  from django.contrib.auth.models import AbstractUser
+  
+  # Create your models here.
+  class User(AbstractUser):
+    followers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='followings')
+  ```
+
+  <br>
+
+- 기존 User로 등록된 데이터들이 존재하므로 DB관련 데이터들을 모두 지우고 모델을 새로 `migrate`해준다
+
+  - `db.sqlite3` 삭제
+  - `accounts` > `migrations` 안에 있는 숫자붙은 migration파일들 모두 삭제
+  - makemigrations
+  - migrate
+
+  <br>
+
+- 새롭게 정의한 User 모델을 바라보도록 settings.py 수정
+
+  - 기본값 : `auth.User`
+
+  ```python
+  # settings.py
+  
+  # 맨 아래에 추가
+  AUTH_USER_MODEL = 'accounts.User'
+  ```
+
+<br>
+
+<br>
+
+### 3.2 View & URL
+
+- 게시글 작성자의 팔로워 명단에 접속중인 **유저가 있는 경우** - Unfollow
+
+  게시글 작성자의 팔로워 명단에 접속중인 **유저가 없는 경우** - Follow
+
+  ```python
+  # articles/views.py
+  
+  from django.contrib.auth import get_user_model
+  from django.shortcuts import render, redirect, get_object_or_404
+  
+  @login_required
+  def follow(request, article_pk, user_pk):
+    # 게시글 작성한 유저
+    person = get_object_or_404(get_user_model(), pk=user_pk)
+    # 지금 접속하고 있는 유저
+    user = request.user
+  
+    if person != user:
+      # 게시글 작성 유저 팔로워 명단에 접속 중인 유저가 있을 경우
+      # -> Unfollow
+      if user in person.followers.all():
+        person.followers.remove(user)
+  
+      # 명단에 없으면
+      # -> Follow
+      else:
+        person.followers.add(user)
+  
+    # 게시글 상세정보로 redirect
+    return redirect('articles:detail', article_pk)
+  ```
+
   
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+admin
+
+nav
+
+내가 팔로우 하는 사람의 글 + 내가 작성한 글
+
+모든 사람 글
