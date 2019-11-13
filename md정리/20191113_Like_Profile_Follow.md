@@ -30,8 +30,11 @@
 
 - 현재 상황에서 `related_name`  설정은 필수
 
-  - `like_users` 필드에 related_name을 쓰지 않으면, User 입장에서 article_set을 사용할 경우 user필드를 갖고올지 like_users 필드를 갖고올지 인식하지 못한다
-  - related_name 설정과 함께 해당 필드는 article_set과 같은 방식으로 호출하지 못하고, like_users 방식으로 호출해야한다.
+  - `like_users` 필드에 `related_name`을 쓰지 않으면, User 입장에서 article_set을 사용할 경우 user필드를 갖고올지 like_users 필드를 갖고올지 인식하지 못한다
+
+    <br>
+
+  - `related_name` 설정과 함께 해당 필드는 article_set과 같은 방식으로 호출하지 못하고, like_users 방식으로 호출해야한다.
 
   <br>
 
@@ -58,6 +61,8 @@
 - `get()` vs `filter()` => 데이터가 없는 경우 에러 여부
 
   - `get()` : 데이터가 없거나 2개 이상이면 에러
+
+  <br>
 
   ```python
   # articles/views.py
@@ -104,7 +109,9 @@
 - Bootstrap Card 컴포넌트를 사용해서 예쁘게 꾸며보자
 
   - Bootstrap  공식 홈페이지 -> Documentation -> Cards
-  - Cards는 grid가 적용되어 있는데 기본적으로 `container > row` 순으로 클래스 안에 있어야한다!
+  - Cards는 grid가 적용되어 있는데 기본적으로 `container > row` class 순으로 안에 있어야한다!
+
+  <br>
 
   ```django
   <!-- articles/index.html -->
@@ -151,6 +158,8 @@
 #### 1.3.2 Font Awesome
 
 > Font Awesome 홈페이지 가입 후 Kits로 돌아가서 코드 복사
+
+<br>
 
 - 좋아요 버튼 추가!
 
@@ -320,6 +329,10 @@
 
 <br>
 
+<br>
+
+<br>
+
 ## 3. Follow
 
 > 상세보기 화면에서 글 작성자의 정보(이름, 팔로워수, 팔로잉수)를 보여주고 follow, unfollow가 가능한 버튼을 만들어보자
@@ -364,6 +377,8 @@
 - 새롭게 정의한 User 모델을 바라보도록 settings.py 수정
 
   - 기본값 : `auth.User`
+
+  <br>
 
   ```python
   # settings.py
@@ -510,6 +525,16 @@
     {% endif %}
   </div>
   ```
+
+<br>
+
+<br>
+
+### 3.5 실행화면
+
+- 팔로잉, 팔로워 수와 팔로워 목록을 보여준다
+
+  > ![1573650262721](images/1573650262721.png)
 
 <br>
 
