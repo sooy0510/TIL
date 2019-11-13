@@ -443,6 +443,21 @@
     return redirect('articles:detail', article_pk)
   ```
 
+  <br>
+
+- `게시물번호/follow/게시물작성자` 형식으로 접근
+
+  ```python
+  # articles/urls.py
+  
+  urlpatterns = [
+  	..
+      path('<int:article_pk>/follow/<int:user_pk>', views.follow, name='follow'),
+  ]
+  ```
+
+  
+
 <br>
 
 <br>
@@ -577,8 +592,160 @@
 
   > ![1573644503515](images/1573644503515.png)
 
+<br>
+
+<br>
+
+<br>
+
+## 5. 좋은글보기
+
+> 내가 팔로우하는 사람의 article + 내가 작성한 article 목록 보여주기
+
+<br>
+
+### 5.1 View & URL
+
+#### 5.1.1 View
+
+- `chain` 
+
+  -  `itertools` 모듈의 함수이며 iterable한 객체들을 인수로 받아 하나의 iterator로 반환함
+
+  - `request.user`를 iterable한 객체로 변환시켜주기 위해 list형태로 바꿔주기
+
+    안바꾸면 `'User' object is not iterable` 에러남
+
+    ```python
+    followings = chain(followings, [request.user])
+    ```
+
+  <br>
+
+- `__in` 
+
+  -  인자로 받은 리스트 안에 존재하는 자료 검색
+  - **[찾고자하는 자료명]__in = [데이터를 찾을 리스트]** 
+
+  <br>
+
+- 보여줄 게시물에 바로 댓글을 달 수 있도록 `CommentForm` 도 context에 담아준다
+
+  <br>
+
+  ```python
+  # articles/views.py
+  
+  from itertools import chain
+  
+  # 내가 팔로우 하는 사람의 글 + 내가 작성한 글
+  def list(request):
+    # 내가 팔로우하고 있는 사람들
+    followings = request.user.followings.all()
+    # 내가 팔로우하고 있는 사람들 + 나 => 합치기
+    followings = chain(followings, [request.user])
+    # 위 명단 사람들 게시글 가져오기
+    # __in : 주어진 리스트 안에 존재하는 자료 검색
+    articles = Article.objects.filter(user__in=followings).order_by('-pk').all()
+    
+    comment_form = CommentForm()
+  
+    context = {
+      'articles':articles,
+      'comment_form':comment_form,
+    }
+    return render(request, 'articles/article_list.html', context)
+  ```
+
+<br>
+
+<br>
+
+#### 5.1.2 URL
+
+- url 열어주기
+
+  ```python
+  # articles/urls.py
+  
+  urlpatterns = [
+  	...
+      path('list/', views.list, name='list'),
+  ]
+  ```
+
+<br>
+
+<br>
+
+### 5.2 Template
+
+- 모든 사용자의 게시물을 보여줄 `explore` 와 같은 형식의 템플릿을 사용할 것이기 때문에 **URL Resolver** 를 사용해서 제목값만 분기해준다
+
+  ``` django
+  <!-- articles/article_list.html -->
+  
+  {% extends 'base.html' %}
+  {% load bootstrap4 %}
+  
+  {% block body %}
+    <!-- URL Resolver를 사용해서 제목값 분기 -->
+    {% if request.resolver_match.url_name == 'list' %}
+      <h1>List</h1>
+    {% else %}
+      <h1>Explore</h1>
+    {% endif %}
+    <hr>
+    {% for article in articles %}
+      <p>글 제목: {{ article.title }}</p>
+      <p>글 내용: {{ article.content }}</p>
+      <hr>
+      <form action="{% url 'articles:comments_create' article.pk %}" method="POST">
+        {% csrf_token %}
+        {% bootstrap_form comment_form %}
+        {% buttons submit='댓글작성' %}{% endbuttons %}
+      </form>
+      <hr>
+    {% endfor %}
+  {% endblock  %}
+  ```
+
+  <br>
+
+  ```django
+  <!-- articles/_nav.html -->
+  
+  ...
+  <li class="nav-item active">
+      <a class="nav-link" href="{% url 'articles:list' %}">좋은글보기</a>
+  </li>
+  <li class="nav-item active">
+      <a class="nav-link" href="{% url 'articles:explore' %}">전부보기</a>
+  </li>
+  ...
+  ```
+
+  
+
+<br>
+
+<br>
+
+### 5.3 실행화면
+
+- 현재 글 제목이 'My Article'인 게시물은 '이수연'이 작성한 게시물이고, 글 제목이 '저녁메뉴'인 게시물은 '이수연'이 팔로우한 사용자의 게시물이다
+
+  > ![1573648378102](images/1573648378102.png)
 
 
-내가 팔로우 하는 사람의 글 + 내가 작성한 글
 
-모든 사람 글
+<br>
+
+<br>
+
+<br>
+
+## 6. 전체글보기
+
+> 모든 게시물의 목록을 보여주자
+
