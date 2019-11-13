@@ -143,3 +143,22 @@ def comments_delete(request, article_pk, comment_pk):
     if request.user == comment.user:
       comment.delete()
   return redirect('articles:detail', article_pk)
+
+
+@login_required
+def like(request, article_pk):  
+  # 좋아요 누를 게시글 가져오기
+  article = get_object_or_404(Article, pk=article_pk)
+
+  # 현재 접속하고 있는 유저
+  user = request.user
+
+  # 현재 게시글을 좋아요 누를 사람 목록에 현재 접속한
+  # 유저가 있을 경우 => 좋아요 취소
+  if article.like_users.filter(pk=user.pk).exists():
+    article.like_users.remove(user)
+  # 목록에 없을 경우 => 좋아요 누르기
+  else:
+    article.like_users.add(user)
+
+  return redirect('articles:index')
