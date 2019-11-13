@@ -749,3 +749,51 @@
 
 > 모든 게시물의 목록을 보여주자
 
+<br>
+
+### 6.1 View & URL
+
+- view
+
+  ```python
+  # articles/views.py
+  
+  def explore(request):
+    articles = Article.objects.all()
+    comment_form = CommentForm()
+    context = {
+      'articles':articles,
+      'comment_form':comment_form,
+    }
+  
+    return render(request, 'articles/article_list.html', context)
+  ```
+
+  <br>
+
+- URL 열어주기
+
+  ```python
+  # articles/urls.py
+  
+  urlpatterns = [
+  	...
+      path('explore/', views.explore, name='explore'),
+  ]
+  ```
+
+<br>
+
+<br>
+
+### 6.2 Template
+
+- 좋은글보기와 함께 공용템플릿을 사용
+
+  - `articles_list.html` 에서 URL Resolver로 제목만 분기해서 사용한다
+
+  <br>
+
+- 실행화면
+
+  ![1573649284101](images/1573649284101.png)
