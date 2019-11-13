@@ -53,7 +53,11 @@
   - `filter()` : 특정한 조건에 맞는 레코드들을 가져온다
   - `exists()` : 최소한 하나의 레코드가 존재하는지 여부를 말해준다
 
+  <br>
+
 - `get()` vs `filter()` => 데이터가 없는 경우 에러 여부
+
+  - `get()` : 데이터가 없거나 2개 이상이면 에러
 
   ```python
   # articles/views.py
@@ -75,6 +79,8 @@
   ```
 
   
+
+<br>
 
 <br>
 
@@ -120,22 +126,11 @@
   ```django
   <!-- articles/_article.html -->
   
-  <!-- 모든 화면 사이즈에서 화면 2분할 -->
   <div class="col-12 col-md-6 mb-3">
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">{{ article.title }}</h5>
         <p class="card-text">
-        <a href="{% url 'articles:like' article.pk %}">
-          <!-- 사용자가 좋아요 안누른 상태 -> 빈 하트 -->
-          {% if request.user in article.like_users.all %}
-            <i class="fas fa-kiss-wink-heart"></i>
-          <!-- python list in -->
-          <!-- 누른 상태 -> 꽉찬 하트 -->
-          {% else %}
-            <i class="far fa-kiss-wink-heart"></i>
-          {% endif %}
-        </a>
           {{ article.like_users.all|length }}명이 이 글을 좋아합니다 <br>
           {{ article.created_at }}
         </p>
@@ -145,6 +140,10 @@
   </div>
   ```
 
+  <br>
+
+  > ![1573627431293](images/1573627431293.png)
+
 <br>
 
 <br>
@@ -153,15 +152,44 @@
 
 > Font Awesome 홈페이지 가입 후 Kits로 돌아가서 코드 복사
 
+- 좋아요 버튼 추가!
 
+  ```django
+  <div class="col-12 col-md-6 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ article.title }}</h5>
+        <p class="card-text">
+          <a href="{% url 'articles:like' article.pk %}">
+            <!-- 사용자가 좋아요 안누른 상태 -> 빈 하트 -->
+            {% if request.user in article.like_users.all %}
+            <i class="fas fa-kiss-wink-heart"></i>
+            <!-- python list in -->
+            <!-- 누른 상태 -> 꽉찬 하트 -->
+            {% else %}
+            <i class="far fa-kiss-wink-heart"></i>
+            {% endif %}
+          </a>
+          {{ article.like_users.all|length }}명이 이 글을 좋아합니다 <br>
+          {{ article.created_at }}
+        </p>
+        <a href="{% url 'articles:detail' article.pk %}" class="btn btn-primary">상세보기</a>
+      </div>
+    </div>
+  </div>
+  ```
 
+  <br>
 
+  > ![1573628448905](images/1573628448905.png)
 
+  
 
+<br>
 
+<br>
 
-
-
+<br>
 
 ## 2. Profile 페이지
 
@@ -189,6 +217,19 @@
 
 <br>
 
+- 이름으로 접근
+
+  ```python
+  # accounts/urls.py
+  
+  urlpatterns = [
+      ...
+      path('<str:username>/', views.profile, name='profile'),
+  ] 
+  ```
+
+<br>
+
 <br>
 
 ### 2.2 Template
@@ -196,7 +237,7 @@
 - profile
 
   ```django
-  <!-- profile.html -->
+  <!-- accounts/profile.html -->
   
   {% extends 'base.html' %}
   
@@ -254,9 +295,11 @@
   {% endblock  %}
   ```
 
-  
+  <br>
 
-<br><br>
+  > ![1573632535738](images/1573632535738.png)
+
+
 
 <br>
 
@@ -271,3 +314,8 @@
 <br>
 
 ### 3.1 User 모델 대체하기
+
+- `AbstractUser`모델을 상속받아서 `ManyToManyField` 로 User간 관계를 설정해준다
+
+  
+

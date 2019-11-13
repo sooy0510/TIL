@@ -26,4 +26,11 @@
   ...
   ```
 
-  
+
+<br>
+
+<br>
+
+## 2. Django - extensions
+
+ https://caesiumy.github.io/2019/04/02/vscode-recommended-extensions/ 

@@ -10,16 +10,16 @@
     <div class="card-body">
       <h5 class="card-title">{{ article.title }}</h5>
       <p class="card-text">
-      <a href="{% url 'articles:like' article.pk %}">
-        <!-- 사용자가 좋아요 안누른 상태 -> 빈 하트 -->
-        {% if request.user in article.like_users.all %}
+        <a href="{% url 'articles:like' article.pk %}">
+          <!-- 사용자가 좋아요 안누른 상태 -> 빈 하트 -->
+          {% if request.user in article.like_users.all %}
           <i class="fas fa-kiss-wink-heart"></i>
-        <!-- python list in -->
-        <!-- 누른 상태 -> 꽉찬 하트 -->
-        {% else %}
+          <!-- python list in -->
+          <!-- 누른 상태 -> 꽉찬 하트 -->
+          {% else %}
           <i class="far fa-kiss-wink-heart"></i>
-        {% endif %}
-      </a>
+          {% endif %}
+        </a>
         {{ article.like_users.all|length }}명이 이 글을 좋아합니다 <br>
         {{ article.created_at }}
       </p>
