@@ -62,10 +62,10 @@
 #### 1.2.1 로직 설계하기
 
 ```
-1. 사용자가 업로드한 content
+1. 사용자가 업로드한 content 확인
 "오늘은 수능날!" #행복 #감성 #추억
 
-2. .split()메소드로 리스트 형식으로 변환
+2. .split()메소드로 잘라서 리스트 형식으로 변환
 ['오늘은', '수능날!', '행복', '감성', '추억']
 
 3. 리스트 반복문 돌리기 : 앞자리가 '#'으로 시작하는 단어를 해시태그 등록
@@ -247,100 +247,123 @@
 
 ### 1.5 Hashtag에 link를 달기
 
-> 상세보기에서 hashtag를 누르면 해당 hashtag를 참조하는 모든 게시물을 보여주는 `hashtag.html`로 이동하도록 template tag를 등록해주자
+> 상세보기에서 hashtag를 누르면 해당 hashtag를 참조하는 모든 게시물을 보여주는 `hashtag.html`로 이동하도록 template filter를 등록해주자
 
 <br>
 
-#### 1.5.1 Custom Template Tag
+#### 1.5.1 사용자 정의 Template Filter
 
 - APP > **templatetags** > make_link.py
 
 - 앱 내에 templatetags 라는 폴더안에 만들어줄 것! 
 
-- content
+- **make_link.py**
 
-  ```python
-  # articles/templatetags/make_link.py
-  
-  # 우리가 만든 template tag
-  from django import template
-  
-  register = template.Library()
-  
-  @register.filter
-  def hashtag_link(article):
-    content = article.content + ' '
-    hashtags = article.hashtags.all()
-  
-    for hashtag in hashtags:
-      # replace(바꿀거, 넣어줄거)
+  - 전체 코드
+
+    ```python
+    # articles/templatetags/make_link.py
+    
+    # 우리가 만든 template tag
+    from django import template
+    
+    register = template.Library()
+    
+    @register.filter
+    def hashtag_link(article):  
       # 마지막에 공백 안넣어주면 hashtag로 인식을 못함
-      content = content.replace(
+      content = article.content + ' '
+      hashtags = article.hashtags.all()
+    
+      for hashtag in hashtags:
+        # replace(기존, 바꿔줄거)
+        content = content.replace(
+          hashtag.content+' ',
+          f'<a href="/articles/{hashtag.pk}/hashtag/">{hashtag.content}</a> '
+        )
+    
+      return content
+    ```
+
+    <br>
+
+    <br>
+
+  - 기존 article content 마지막에 공백 추가해주는 이유
+
+    ```python
+    content = article.content+' '
+    ```
+
+    - hashtag를 찾을때는 hashtag의 content에 공백을 추가한 `hashtag.content+' '` 형태로 찾게된다. 만약 article content의 마지막이 hashtag라면 hashtag를 찾을 때 hashtag라고 인식을 못하므로 article content의 마지막에 공백을 추가해주는 것이다
+
+      <br>
+
+      > ![1573716036838](images/1573716036838.png)
+
+    <br>
+
+    <br>
+
+  - `replace()`로 hashtag를 a태그로 대체해줄때 변환해줄 문자열 마지막에 공백 추가해주는 이유
+
+    ```python
+    content = content.replace(
         hashtag.content+' ',
         f'<a href="/articles/{hashtag.pk}/hashtag/">{hashtag.content}</a> '
-      )
+    )
+    ```
+
+    - 게시물에 hashtag를 쓸 때는 '#안녕 #히히' 이런식으로 hashtag간 공백이 있다. 그래서 우리가 hashtag를 찾을 때도 hashtag content에 공백을 더해준다음 찾는 것이다. 대체할 때도 a태그로 변환해준 뒤 공백을 추가해주어야 기존에 입력한 게시물의 내용 그대로 보일것이다
+
+      <br>
+
+      > ![1573716563917](images/1573716563917.png)
+
   
-    return content
-  ```
 
   <br>
 
-  ```django
-  <!-- articles/detail.html -->
-  
-  {% extends 'base.html' %}
-  {% load make_link %}
-  
-  {% block body %}
-  {% include 'articles/_follow.html' %}
-  
-  <h1>DETAIL</h1>
-  <label for="pk">PK</label>
-  <p>{{ article.pk }}</p>
-  <label for="title">TITLE</label>
-  <p>{{ article.title }}</p>
-  <label for="content">CONTENT</label>
-  <!-- <p>{{ article.content }}</p> -->
-  <!-- tag 적용되도록 escape을 방지해주는 django template tag -->
-  <!-- https://docs.djangoproject.com/en/2.2/ref/templates/builtins/ -->
-  <p>{{ article|hashtag_link|safe }}</p>
-  <hr>
-  <a href="{% url 'articles:index' %}">[HOME]</a>
-  {% if request.user == article.user %}
-    <form action="{% url 'articles:update' article.pk %}" method="GET">
-      <input type="submit" value="[EDIT]">
-    </form>
-    <form action="{% url 'articles:delete' article.pk %}" method="POST">
-      {% csrf_token %}
-      <input type="submit" value="[DELETE]">
-    </form>
-  {% endif %}
-  
-  <hr>
-  {% if user.is_authenticated %}
-    <form action="{% url 'articles:comments_create' article.pk %}" method="POST">
-      {% csrf_token %}
-      {{ comment_form }}
-      <input type="submit" value="댓글작성">
-    </form>
-  {% else %}
-    <a href="{% url 'accounts:login' %}">[댓글 작성하려면 로그인 해주세요]</a>
-  {% endif %}
-  <hr>
-  <p><b>댓글 목록({{ comments|length }})개</b></p>
-  {% for comment in comments %}
-  <!-- forloop.counter : for문 순서, forloop.revcounter : 역순 -->
-    <p style="display:inline">[{{ forloop.revcounter }}번댓글] {{ comment.content }}
-    {% if request.user == comment.user %}
-      <form style="display:inline" action="{% url 'articles:comments_delete' article.pk comment.pk %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="삭제" onClick="return confirm('정말 삭제하겠습니까?')">
-      </form>  
-    {% endif %}
-    </p>
-  {% endfor %}
-  {% endblock  %}
-  ```
+  <br>
+
+- **detail.html**
+
+  - 전체 코드
+
+    ```django
+    <!-- articles/detail.html -->
+    
+    {% extends 'base.html' %}
+    {% load make_link %}
+    
+    {% block body %}
+    {% include 'articles/_follow.html' %}
+    ...
+    <label for="content">CONTENT</label>
+    <!-- tag 적용되도록 escape을 방지해주는 django 내장 filter -->
+    <p>{{ article|hashtag_link|safe }}</p>
+    ...
+    {% endblock  %}
+    ```
+
+    <br>
+
+  - **{{ article|hashtag_link|safe }}**
+
+    -  `hashtag_link` 필터를 정의할 때 나는 article 객체를 인자로 받도록 했다
+    - 따라서 기존에 article.content 를 넘겨주던 것을 article 객체를 넘기도록 수정해주었다
+
+    <br>
+
+  - `safe`
+
+    - tag escape을 방지해주는 Django 내장 필터
+
+      <br>
+
+      > ![1573717456770](images/1573717456770.png)
+
+      
 
 <br>
 
@@ -506,9 +529,7 @@ $ pip install django-allauth
 
 <br>
 
-<br>
-
-### 2.2.3 Django 프로젝트에 Kakao Login 적용
+#### 2.2.3 Django 프로젝트에 Kakao Login 적용
 
 - 로그인 기능만 있는 login 템플릿 생성
 
