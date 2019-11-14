@@ -133,7 +133,7 @@
 
 <br>
 
-### 1.3. UPDATE
+### 1.3 UPDATE
 
 - `CREATE` 와 로직이 똑같다. 
 
@@ -166,7 +166,7 @@
 
 <br>
 
-### 1.4. Hashtag 게시글 모아보기
+### 1.4 Hashtag 게시글 모아보기
 
 #### 1.4.1 View & URL
 
@@ -239,13 +239,71 @@
 
 - 실행화면
 
-  > ![1573699480833](images/1573699480833.png)
+  > ![1573703991855](images/1573703991855.png)
 
 <br>
 
 <br>
 
+### 1.5 Hashtag에 link를 달기
+
+> 상세보기에서 hashtag를 누르면 해당 hashtag를 참조하는 모든 게시물을 보여주는 `hashtag.html`로 이동하도록 template tag를 등록해주자
+
+<br>
+
+#### 1.5.1 Custom Template Tag
+
+- APP > **templatetags** > make_link.py
+
+- 앱 내에 templatetags 라는 폴더안에 만들어줄 것! 
+
+- content
+
+  ```python
+  # articles/templatetags/make_link.py
+  
+  # 우리가 만든 template tag
+  from django import template
+  
+  register = template.Library()
+  
+  @register.filter
+  def hashtag_link(article):
+    content = article.content + ' '
+    hashtags = article.hashtags.all()
+  
+    for hashtag in hashtags:
+      # replace(바꿀거, 넣어줄거)
+      # 마지막에 공백 안넣어주면 hashtag로 인식을 못함
+      content = content.replace(
+        hashtag.content+' ',
+        f'<a href="/articles/{hashtag.pk}/hashtag/">{hashtag.content}</a> '
+      )
+  
+    return content
+  ```
+
+  
 
 
 
+
+
+<br>
+
+<br>
+
+<br>
+
+## 2. Social Login
+
+> 인증, 계정, 등록 등을 다루는 여러가지 방법이 존재하는데, 우리는 **`django-allauth` 라는 라이브러리를 사용해서 손쉽게 Social Login 을 구현해보자**
+
+**<br>**
+
+### 2.1 사전준비
+
+
+
+### 2.2 Kakao Developers `OAuth`  등록
 

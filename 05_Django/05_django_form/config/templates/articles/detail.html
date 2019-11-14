@@ -11,6 +11,8 @@
 <p>{{ article.title }}</p>
 <label for="content">CONTENT</label>
 <!-- <p>{{ article.content }}</p> -->
+<!-- tag 적용되도록 escape을 방지해주는 django template tag -->
+<!-- https://docs.djangoproject.com/en/2.2/ref/templates/builtins/ -->
 <p>{{ article|hashtag_link|safe }}</p>
 <hr>
 <a href="{% url 'articles:index' %}">[HOME]</a>
