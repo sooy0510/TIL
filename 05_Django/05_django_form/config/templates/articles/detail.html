@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load make_link %}
 
 {% block body %}
 {% include 'articles/_follow.html' %}
@@ -9,12 +10,12 @@
 <label for="title">TITLE</label>
 <p>{{ article.title }}</p>
 <label for="content">CONTENT</label>
-<p>{{ article.content }}</p>
+<!-- <p>{{ article.content }}</p> -->
+<p>{{ article|hashtag_link|safe }}</p>
 <hr>
 <a href="{% url 'articles:index' %}">[HOME]</a>
 {% if request.user == article.user %}
-  <form action="{% url 'articles:update' article.pk %}" method="POST">
-    {% csrf_token %}
+  <form action="{% url 'articles:update' article.pk %}" method="GET">
     <input type="submit" value="[EDIT]">
   </form>
   <form action="{% url 'articles:delete' article.pk %}" method="POST">

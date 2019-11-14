@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect, get_object_or_404
 from IPython import embed
-from .models import Article, Comment
+from .models import Article, Comment, Hashtag
 from .forms import ArticleForm, CommentForm
 import hashlib
 from itertools import chain
@@ -44,6 +44,13 @@ def create(request):
       article = form.save(commit=False)
       article.user = request.user
       article.save()
+      # hashtag
+      # 게시글 내용을 split해서 리스트로 만듦
+      for word in article.content.split():
+        # word가'#'으로 시작할 경우 해시태그 등록
+        if word.startswith('#'):
+          hashtag, created = Hashtag.objects.get_or_create(content=word)
+          article.hashtags.add(hashtag)
     return redirect('articles:detail', article.pk)
   else:
     form = ArticleForm()
@@ -100,6 +107,14 @@ def update(request, article_pk):
         # article.title = form.cleaned_data('title')
         # article.content = form.cleaned_data('content')
         article = form.save()
+        # hashtag 초기화
+        article.hashtags.clear()
+        for word in article.content.split():
+          # word가'#'으로 시작할 경우 해시태그 등록
+          if word.startswith('#'):
+            hashtag, created = Hashtag.objects.get_or_create(content=word)
+            article.hashtags.add(hashtag)
+
         return redirect('articles:detail', article.pk)
     else:
       # form = ArticleForm(initial={
@@ -225,3 +240,18 @@ def explore(request):
   }
 
   return render(request, 'articles/article_list.html', context)
+
+
+
+# Hashtag 글 모아보기
+def hashtag(request, hash_pk):
+  # 해시태그 가져오기
+  hashtag = get_object_or_404(Hashtag, pk=hash_pk)
+  # 해당 해시태그를 참조하는 게시글들 가져오기
+  articles = hashtag.article_set.order_by('-pk')
+  context = {
+    'hashtag':hashtag,
+    'articles':articles,
+  }
+
+  return render(request, 'articles/hashtag.html', context)
