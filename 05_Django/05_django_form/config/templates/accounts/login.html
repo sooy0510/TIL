@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
+{% load socialaccount %}
 
 {% block body %}
-<h1>로그인</h1>
-<hr>
+
 <form action="" method="POST">
   {% csrf_token %}
+<!-- {{ form.as_p }} -->  
   {% bootstrap_form form %}
-  {% buttons submit='로그인' %}
+  {% buttons submit='로그인' reset='초기화' %}
   {% endbuttons %}
+  <a href="{% provider_login_url 'kakao' %}" class="btn btn-warning">카카오 로그인</a>
 </form>
-
 {% endblock  %} 

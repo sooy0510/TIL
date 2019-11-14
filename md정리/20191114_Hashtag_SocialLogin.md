@@ -283,11 +283,64 @@
     return content
   ```
 
+  <br>
+
+  ```django
+  <!-- articles/detail.html -->
   
-
-
-
-
+  {% extends 'base.html' %}
+  {% load make_link %}
+  
+  {% block body %}
+  {% include 'articles/_follow.html' %}
+  
+  <h1>DETAIL</h1>
+  <label for="pk">PK</label>
+  <p>{{ article.pk }}</p>
+  <label for="title">TITLE</label>
+  <p>{{ article.title }}</p>
+  <label for="content">CONTENT</label>
+  <!-- <p>{{ article.content }}</p> -->
+  <!-- tag 적용되도록 escape을 방지해주는 django template tag -->
+  <!-- https://docs.djangoproject.com/en/2.2/ref/templates/builtins/ -->
+  <p>{{ article|hashtag_link|safe }}</p>
+  <hr>
+  <a href="{% url 'articles:index' %}">[HOME]</a>
+  {% if request.user == article.user %}
+    <form action="{% url 'articles:update' article.pk %}" method="GET">
+      <input type="submit" value="[EDIT]">
+    </form>
+    <form action="{% url 'articles:delete' article.pk %}" method="POST">
+      {% csrf_token %}
+      <input type="submit" value="[DELETE]">
+    </form>
+  {% endif %}
+  
+  <hr>
+  {% if user.is_authenticated %}
+    <form action="{% url 'articles:comments_create' article.pk %}" method="POST">
+      {% csrf_token %}
+      {{ comment_form }}
+      <input type="submit" value="댓글작성">
+    </form>
+  {% else %}
+    <a href="{% url 'accounts:login' %}">[댓글 작성하려면 로그인 해주세요]</a>
+  {% endif %}
+  <hr>
+  <p><b>댓글 목록({{ comments|length }})개</b></p>
+  {% for comment in comments %}
+  <!-- forloop.counter : for문 순서, forloop.revcounter : 역순 -->
+    <p style="display:inline">[{{ forloop.revcounter }}번댓글] {{ comment.content }}
+    {% if request.user == comment.user %}
+      <form style="display:inline" action="{% url 'articles:comments_delete' article.pk comment.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="삭제" onClick="return confirm('정말 삭제하겠습니까?')">
+      </form>  
+    {% endif %}
+    </p>
+  {% endfor %}
+  {% endblock  %}
+  ```
 
 <br>
 
@@ -298,12 +351,234 @@
 ## 2. Social Login
 
 > 인증, 계정, 등록 등을 다루는 여러가지 방법이 존재하는데, 우리는 **`django-allauth` 라는 라이브러리를 사용해서 손쉽게 Social Login 을 구현해보자**
+>
+> 대부분의 소셜 로그인을 지원하고 회원가입 시킬 수 있다
 
 **<br>**
 
 ### 2.1 사전준비
 
+> 공식문서 :  https://django-allauth.readthedocs.io/en/latest/installation.html 
 
+<br>
+
+#### 2.1.1 설치
+
+```bash
+$ pip install django-allauth
+```
+
+<br>
+
+<br>
+
+#### 2.1.2 settings.py 수정
+
+- **AUTHENTICATION_BACKENDS** 추가 & **INSTALLED_APPS** 수정 
+
+  ```python
+  # settings.py
+  
+  AUTHENTICATION_BACKENDS = [
+      # Needed to login by username in Django admin, regardless of `allauth`
+      'django.contrib.auth.backends.ModelBackend',
+  ]
+  
+  
+  INSTALLED_APPS = [
+      ...
+      'django.contrib.sites',
+      'allauth',
+      'allauth.account',
+      'allauth.socialaccount',
+      'allauth.socialaccount.providers.kakao',
+      ...
+  ]
+  SITE_ID = 1
+  ```
+
+  <br>
+
+  <br>
+
+#### 2.1.3 urls.py
+
+ - **config**/urls.py 수정
+
+   ```python
+   # config/urls.py
+   
+   urlpatterns = [
+       path('articles/', include('articles.urls')),
+       path('accounts/', include('accounts.urls')),
+       path('accounts/', include('allauth.urls')),
+       path('admin/', admin.site.urls),
+   ] 
+   ```
+
+<br>
+
+	- 수정된 부분이 많으니 migration 다시 해주자!
+
+<br>
+
+<br>
+
+#### 2.1.4 설치 확인
+
+- ` http://127.0.0.1:8000/accounts/` 로 접속하면 새로운 URL이 등록된것을 확인할 수 있다
+
+- Login의 경우 현재는 우리가 만든 URL에 먼저 걸리고 있지만 앞으로 Social Login에서는 kakao Login 에 걸리게 할 것이다
+
+  > ![1573707191205](images/1573707191205.png)
+
+  <br>
+
+  > ![1573707341966](images/1573707341966.png)
+
+<br>
+
+<br>
 
 ### 2.2 Kakao Developers `OAuth`  등록
 
+#### 2.2.1 Kakao Developers에서 APP 추가 & 세팅
+
+> Kakao Deveoloper :  https://developers.kakao.com/ 
+
+<br>
+
+- APP 추가
+  - 내 애플리케이션 > 앱 만들기
+    - 앱 이름 : django-blog 로 설정
+
+<br>
+
+- 사용자 관리 활성화
+
+  - 설정 > 사용자 관리 > `ON`
+
+    > ![1573709221147](images/1573709221147.png)
+
+<br>
+
+- 플랫폼추가
+
+  - 설정 > 일반 > 플랫폼추가(웹, 사이트 도메인 2개)
+
+    > ![1573710354554](images/1573710354554.png)
+
+<br>
+
+- 로그인 Redirect URI
+
+  - 설정 > 사용자관리 > 로그인 Redirect URI
+
+  - http://127.0.0.1:8000/accounts/kakao/login/callback/ 만 등록
+
+    > ![1573711577473](images/1573711577473.png)
+
+  
+
+<br>
+
+<br>
+
+#### 2.2.2 Django 관리페이지에서 Social Login 추가
+
+- admin으로 login > 소셜 어플리케이션 > **소셜 어플리케이션 추가**
+
+  > ![1573710702577](images/1573710702577.png)
+
+  <br>
+
+- CLIENT SECRET 키 발급 > 상태 ON > 적용
+
+  > ![1573712299380](images/1573712299380.png)
+
+  <br>
+
+- 어플리케이션 셋팅 후 저장
+
+  > ![1573712045671](images/1573712045671.png)
+
+<br>
+
+<br>
+
+<br>
+
+### 2.2.3 Django 프로젝트에 Kakao Login 적용
+
+- 로그인 기능만 있는 login 템플릿 생성
+
+  ```django
+  <!-- accounts/login.html -->
+  
+  {% extends 'base.html' %}
+  {% load bootstrap4 %}
+  {% load socialaccount %}
+  
+  {% block body %}
+  
+  <form action="" method="POST">
+    {% csrf_token %}
+  <!-- {{ form.as_p }} -->  
+    {% bootstrap_form form %}
+    {% buttons submit='로그인' reset='초기화' %}
+    {% endbuttons %}
+    <a href="{% provider_login_url 'kakao' %}" class="btn btn-warning">카카오 로그인</a>
+  </form>
+  {% endblock  %} 
+  ```
+
+<br>
+
+- 새로 만든 login 템플릿으로 리턴(`auth_form.html` => `login.html` )
+
+  ```python
+  # accounts/views.py
+  
+  
+  def login(request):
+    ...
+    
+    context = { 'form':form }
+    return render(request, 'accounts/login.html', context)
+  ```
+
+<br>
+
+- 로그인 후 Redirect 경로 설정
+
+  - 로그인 후에 index 페이지로 보내기
+
+  ```python
+  # settings.py
+  
+  LOGIN_REDIRECT_URL = 'articles:index'
+  ```
+
+
+
+<br>
+
+<br>
+
+#### 2.2.4 Kakao Login 실행
+
+- 로컬 로그인기능 말고 kakao를 통해 로그인 하고 싶으면 바로 `kakao login`을 누른다
+
+  > ![1573713071647](images/1573713071647.png)
+
+<br>
+
+- 실제 카카오 계정으로 로그인
+
+  > ![1573713128663](images/1573713128663.png)
+
+<br>
+
+- Redirect 경로 설정한대로 로그인 후 index페이지로 이동
+
+  > ![1573713227035](images/1573713227035.png)
