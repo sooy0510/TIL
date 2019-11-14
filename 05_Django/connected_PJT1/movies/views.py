@@ -4,7 +4,7 @@ from .models import Movie, Comment
 # Create your views here.
 def index(request):
   movies = Movie.objects.all()
-  context = {'movies':movies}
+  context = {'movies':movies} 
   return render(request, 'movies/index.html', context)
  
 

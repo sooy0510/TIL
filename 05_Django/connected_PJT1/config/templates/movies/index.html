@@ -6,8 +6,8 @@
   <section id="main">
 
     <!-- Thumbnails --> 
-      <section class="thumbnails">
-        {% comment %} {% for movie in movies %}
+      {% comment %}<section class="thumbnails">
+        {% for movie in movies %}
           <div class="wrapper">
             <a href="{% url 'movies:detail' movie.pk %}">
               <img src="{{ movie.poster_url }}" alt="" />
@@ -15,41 +15,17 @@
               <h3>{{ movie.score }}</h3>
             </a>
           </div>
-        {% endfor %} {% endcomment %}
-      </section> 
-
-      {% comment %} <script type="text/javascript">
-        $(document).ready(function() { 
-        {% for movie in movies %}
-          {% if forloop.counter|divisibleby:3 or forloop.counter == 1 %}  
-            var div = "";
-            div += '<div class="wrapper">';
-            div += '<a href="{% url 'movies:detail' movie.pk %}">';
-            div += '<img src="{{ movie.poster_url }}" alt="" />';
-            div += '<h3>{{ movie.title }}</h3>';
-            div += '<h3>{{ movie.score }}</h3></a></div>';
-            $(".thumbnails").append(div);
-          {% else %}
-            var div = "";
-            div += '<a href="{% url 'movies:detail' movie.pk %}">';
-            div += '<img src="{{ movie.poster_url }}" alt="" />';
-            div += '<h3>{{ movie.title }}</h3>';
-            div += '<h3>{{ movie.score }}</h3></a>';
-            $(".wrapper:last").append(div);
-          {% endif %}
-        {% endfor %}
-        });
-  
-      </script> {% endcomment %}
+        {% endfor %} 
+      </section> {% endcomment %}
       
       <div class="row justify-content-center">
         {% for movie in movies %}
-          <div class="card col-12 col-md-3 m-4 p-1" style="width: 18rem; border-bottom: 6px solid black; border-left: 0px; border-right: 0px; border-top: 0px;">
-            <img class="card-img-top" src="{{ movie.poster_url }}" alt="Card image cap" style="width: 18rem;>
-            <div class="card-body pb-0">
-              <h4 class="card-text">{{ movie.title }}</h4>
-              <h5 class="text-right">{{ movie.score }}</h5>
-            </div>
+          <div class="card col-12 col-md-3 m-4 p-1" style="width: 23rem; border-bottom: 20px; border-left: 20px; border-right: 20px; border-top: 0px;">
+            <img class="card-img-top" src="{{ movie.poster_url }}" alt="Card image cap" style="width: 18rem";>
+              <div class="card-body pb-0">
+                <h4 class="card-text" style="text-align:left;">{{ movie.title }}</h4>
+                <h5 class="text-right" style="text-align:right;">{{ movie.score }}</h5>
+              </div>
           </div>
         {% endfor %}
       </div>
