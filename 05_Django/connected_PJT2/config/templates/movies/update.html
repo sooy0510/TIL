@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h1>UPDATE</h1>
+
+<form action="{% url 'movies:update' movie.pk %}" method="POST">
+  <label for="title">title</label>
+  <input type="text" name="title" value={{ movie.title }}>
+  <hr>
+  <label for="description">description</label>
+  <textarea name="description" cols="30" rows="10">{{ movie.description }}</textarea>
+  <hr>
+  <label for="poster">poster_url</label>
+  <input type="text" name="poster" value={{ movie.poster }}>
+  <hr>
+
+  <a href="{% url 'movies:update' movie.pk %}">[등록]</a>
+</form>
+
+{% endblock  %}

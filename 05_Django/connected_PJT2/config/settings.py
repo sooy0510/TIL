@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'movies',
-    'imageKit',
+    #'imageKit',
     'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
