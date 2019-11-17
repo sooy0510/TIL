@@ -4,7 +4,7 @@ from . import views
 
 app_name='movies'
 
-urlpatterns = [
+urlpatterns = [ 
     path('', views.index, name='index'),
     # path('new/', views.new, name='new'),        # CREATE Logic - form전달
     # path('create/', views.create, name='create'),  # CREATE Logic - 생성

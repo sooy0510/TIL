@@ -27,15 +27,12 @@
   ```
 
 
-
-
-<br>
-
-<br>
-
 ## 2. github 이미지 업로드
 
 - 상대경로로 설정(`./images`)  
 
 ![1572416700647](../md%EC%A0%95%EB%A6%AC/images/1572416700647.png)
 
+## 2. Django - extensions
+
+ https://caesiumy.github.io/2019/04/02/vscode-recommended-extensions/ 

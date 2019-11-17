@@ -1,5 +1,6 @@
 from IPython import embed
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
 
 from django.contrib.auth import login as auth_login
@@ -51,7 +52,7 @@ def login(request):
     form = AuthenticationForm()
   
   context = { 'form':form }
-  return render(request, 'accounts/auth_form.html', context)
+  return render(request, 'accounts/login.html', context)
 
 
 def logout(request):
@@ -90,3 +91,9 @@ def change_password(request):
     form = PasswordChangeForm(request.user)
   context = {'form':form}
   return render(request, 'accounts/auth_form.html', context)
+
+
+def profile(request, username):
+  person = get_object_or_404(get_user_model(), username=username)
+  context = {'person':person}
+  return render(request, 'accounts/profile.html', context)

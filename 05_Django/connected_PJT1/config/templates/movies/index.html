@@ -5,9 +5,9 @@
 <!-- Main -->
   <section id="main">
 
-    <!-- Thumbnails -->
-      <section class="thumbnails">
-        {% comment %} {% for movie in movies %}
+    <!-- Thumbnails --> 
+      {% comment %}<section class="thumbnails">
+        {% for movie in movies %}
           <div class="wrapper">
             <a href="{% url 'movies:detail' movie.pk %}">
               <img src="{{ movie.poster_url }}" alt="" />
@@ -15,68 +15,22 @@
               <h3>{{ movie.score }}</h3>
             </a>
           </div>
-        {% endfor %} {% endcomment %}
-      </section> 
-
-      <script type="text/javascript">
-        $(document).ready(function() { 
+        {% endfor %} 
+      </section> {% endcomment %}
+      
+      <div class="row justify-content-center" style="width: 100%; float:none; margin:0 auto">
         {% for movie in movies %}
-          {% if forloop.counter|divisibleby:3 or forloop.counter == 1 %}  
-            var div = "";
-            div += '<div class="wrapper">';
-            div += '<a href="{% url 'movies:detail' movie.pk %}">';
-            div += '<img src="{{ movie.poster_url }}" alt="" />';
-            div += '<h3>{{ movie.title }}</h3>';
-            div += '<h3>{{ movie.score }}</h3></a></div>';
-            $(".thumbnails").append(div);
-          {% else %}
-            var div = "";
-            div += '<a href="{% url 'movies:detail' movie.pk %}">';
-            div += '<img src="{{ movie.poster_url }}" alt="" />';
-            div += '<h3>{{ movie.title }}</h3>';
-            div += '<h3>{{ movie.score }}</h3></a>';
-            $(".wrapper:last").append(div);
-          {% endif %}
-        {% endfor %}
-        });
-  
-      </script>
-
-      <!-- <section class="thumbnails">
-        {% for movie in movies %}
-          <div class="wrapper">
-            {% if movie.pk > 0 %}
-              <script>
-                var row = document.createElement('div');
-                var a = document.createElement('a');
-                a.setAttribute("href", "{% url 'movies:detail' movie.pk %}");
-                var img = document.createElement('img');
-                img.setAttribute("src","{{ movie.poster_url }}");
-                var title = document.createElement('h1');
-                var title_text = document.createTextNode("{{ movie.title }}");
-                title.appendChild(title_text);
-                var score = document.createElement('h1');
-                var score_text = document.createTextNode("{{ movie.score }}");
-                score.appendChild(score_text);
-                row.appendChild(a);
-                row.appendChild(img);
-                row.appendChild(title);
-                row.appendChild(score);
-                $('.wrapper').appendTo(row)
-              </script>
-            {% endif %}
-            {% comment %} <div>
-              <a href="{% url 'movies:detail' movie.pk %}">
-                <img src="{{ movie.poster_url }}" alt="" />
-                <h3>{{ movie.title }}</h3>
-                <h3>{{ movie.score }}</h3>
-              </a>
-            </div> {% endcomment %}
+          <div class="card col-12 col-md-3 m-4 p-1" style="width: 23rem; border-bottom: 20px; border-top: 0px;">
+            <a href="{% url 'movies:detail' movie.pk %}">
+              <img class="card-img-top" src="{{ movie.poster_url }}" alt="Card image cap" style="width: 19rem";>
+              <div class="card-body pb-0" style="width: 19rem";>
+                <h4 class="card-text" style="text-align:left;">{{ movie.title }}</h4>
+                <h5 class="text-right" style="text-align:right;">{{ movie.score }}</h5>
+              </div>
+            </a>
           </div>
         {% endfor %}
-      </section>
-      -->
-
+      </div>
   </section>
 
 {% endblock  %}
