@@ -215,22 +215,21 @@
   ```python
   # settings.py
   
-  # Media files
-  # 업로드된 파일의 주소를 만들어주는 역할
-MEDIA_URL = '/media/'
-  ```
-
-  <br>
-
-  - 업로드한 파일에 `/media/`라는 주소가 생긴것을 확인할 수 있다
-
-  > ![1572953396865](images/1572953396865.png)
-
-  <br>
-
-  - 여전히 파일은 `root`에 저장된다
-
-  > ![1572953589234](images/1572953589234.png)
+  MEDIA_URL = '/media/'
+  MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+```
+  
+<br>
+  
+- 업로드한 파일에 `/media/`라는 주소가 생긴것을 확인할 수 있다
+  
+> ![1572953396865](images/1572953396865.png)
+  
+<br>
+  
+- 여전히 파일은 `root`에 저장된다
+  
+> ![1572953589234](images/1572953589234.png)
   
   
 
