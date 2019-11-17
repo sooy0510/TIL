@@ -11,7 +11,7 @@
 <hr>
 <img src="{{ movie.poster.url }}" alt="poster" name="poster">
 <hr>
-<a href="{% url 'movies:index' %}">목록</a>
+<a href="{% url 'movies:index' %}">목록</a>  
 <a href="{% url 'movies:edit' movie.pk %}">수정</a>
 <a href="{% url 'movies:delete' movie.pk %}">삭제</a>
 <hr>

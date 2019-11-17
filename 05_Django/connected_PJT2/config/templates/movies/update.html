@@ -3,19 +3,11 @@
 {% block body %}
 <h1>UPDATE</h1>
 
-<form action="{% url 'movies:edit' movie.pk %}" method="POST" enctype="multipart/form-data">
+<form action="" method="POST" enctype="multipart/form-data">
   {% csrf_token %}
-  <label for="title">title</label>
-  <input type="text" name="title" value={{ movie.title }}>
-  <hr>
-  <label for="description">description</label>
-  <textarea name="description" cols="30" rows="10">{{ movie.description }}</textarea>
-  <hr>
-  <label for="poster">poster_url</label>
-  <input type="file" name="poster" id="poster" accept="image/*">
-  <hr>
+  {{ form.as_p }}
 
-  <input type="submit" value=등록>
+  <input type="submit" value="등록">
 </form>
 
 {% endblock  %}

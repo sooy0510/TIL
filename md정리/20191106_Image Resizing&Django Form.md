@@ -222,6 +222,8 @@ INSTALLED_APPS = [
 - 수정한 `CREATE`
 
   ```python
+  from .forms import ArticleForm, CommentForm
+  
   def create(request):
     # POST 요청 => 데이터를 받아서 DB에 저장
     if request.method == 'POST':
@@ -617,6 +619,8 @@ def update(request, article_pk):
   <br>
 
   ```python
+  from django.shortcuts import render, redirect, get_object_or_404
+  
   def detail(request, article_pk):
     #article = Article.objects.get(pk=article_pk)
     article = get_object_or_404(Article, pk=article_pk)
