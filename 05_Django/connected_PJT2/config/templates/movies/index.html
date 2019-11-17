@@ -4,8 +4,10 @@
 글 생성
 <a href="{% url 'movies:create' %}">[NEW]</a>
 <hr>
-{% for movie in movies %}
-  [{{ movie.pk }}] <a href="{% url 'movies:detail' movie.pk %}">{{ movie.title }}</a> 
-  <hr>
-{% endfor %}
+<div class="row">
+  {% for movie in movies %}
+    [{{ movie.pk }}] <a href="{% url 'movies:detail' movie.pk %}">{{ movie.title }}</a> 
+    <hr>
+  {% endfor %}
+</div>
 {% endblock %}

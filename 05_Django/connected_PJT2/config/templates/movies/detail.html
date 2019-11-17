@@ -11,7 +11,25 @@
 <hr>
 <img src="{{ movie.poster.url }}" alt="poster" name="poster">
 <hr>
-<a href="{% url 'movies:index' %}">[HOME]</a>
-<a href="{% url 'movies:update' movie.pk %}">[UDPATE]</a>
-<a href="{% url 'movies:delete' movie.pk %}">[DELETE]</a>
+<a href="{% url 'movies:index' %}">목록</a>
+<a href="{% url 'movies:edit' movie.pk %}">수정</a>
+<a href="{% url 'movies:delete' movie.pk %}">삭제</a>
+<hr>
+{% for rating in ratings %}
+  <form action="{% url 'movies:ratings_delete' movie.pk rating.pk %}" method="POST">
+  {% csrf_token %}
+    <div>
+      {{ rating.score }} - {{ rating.content }} <input type="submit" value="삭제">
+    </div>
+  </form>
+{% endfor %}
+<hr>
+<form action="{% url 'movies:ratings_create' movie.pk %}" method="POST">
+  {% csrf_token %}
+  <label for="score">SCORE</label>
+  <input type="number" name="score">
+  <label for="content">CONTENT</label>
+  <input type="text" name="content">
+  <input type="submit" value="등록">
+</form>
 {% endblock  %}
