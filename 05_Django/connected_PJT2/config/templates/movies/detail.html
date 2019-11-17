@@ -9,10 +9,9 @@
 <label for="description">description</label>
 <textarea name="description" cols="30" rows="10">{{ movie.description }}</textarea>
 <hr>
-<img src="{{ movie.poster }}" alt="..." name="poster">
+<img src="{{ movie.poster.url }}" alt="poster" name="poster">
 <hr>
 <a href="{% url 'movies:index' %}">[HOME]</a>
 <a href="{% url 'movies:update' movie.pk %}">[UDPATE]</a>
 <a href="{% url 'movies:delete' movie.pk %}">[DELETE]</a>
-</form>
 {% endblock  %}

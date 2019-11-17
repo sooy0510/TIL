@@ -14,12 +14,12 @@ def create(request):
   if request.method == 'POST':
     title = request.POST.get('title')
     description = request.POST.get('description')
-    poster = request.POST.get('poster')
+    poster = request.FILES.get('poster')  
 
     movie = Movie(title=title, description=description, poster=poster)
     movie.save()
 
-    return redirect('movies:index')
+    return redirect('movies:detail', movie.pk)
   else:
     return render(request, 'movies/create.html')
 
@@ -36,10 +36,10 @@ def update(request, movie_pk):
   if request.method == 'POST':
     movie.title = request.POST.get('title')
     movie.description = request.POST.get('description')
-    movie.poster = request.POST.get('poster')
+    movie.poster = request.FILES.get('poster')
     movie.save()
 
-    return redirect('movies:detail')
+    return redirect('movies:detail', movie_pk)
 
   else:
     context = {

@@ -11,7 +11,8 @@ class Movie(models.Model):
   #   upload_to='movies/images',      # 저장 위치   
   #   # 실제경로 -> MEDIA_ROOT/movies/images
   # ) 
-  poster = models.TextField()
+  #poster = models.TextField()
+  poster = models.ImageField(blank=True)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
   user = models.IntegerField(default=1)
@@ -19,7 +20,7 @@ class Movie(models.Model):
   def __str__(self):
       return f'[{self.pk}]:{self.title}'
   
-
+ 
 
 class Rating(models.Model):
   score = models.FloatField()
