@@ -223,9 +223,9 @@ MEDIA_URL = '/media/'
   MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 ```
   
-<br>
+
   
-<br>
+<br>>
   
 - 업로드한 파일에 `/media/`라는 주소가 생긴것을 확인할 수 있다
   
