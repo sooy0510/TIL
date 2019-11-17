@@ -215,3 +215,87 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
   
 
+<br>
+
+<br>
+
+## 2019/11/12(화)
+
+1. favicon 적용
+
+2. Static files 경로 수정
+
+   ```python
+   ### settings.py
+   
+   STATIC_URL = '/static/'
+   STATICFILES_DIRS = [
+       os.path.join(BASE_DIR, 'config', 'assets'),
+   ]
+   ```
+
+   <br>
+
+   > ![1573488948214](images/1573488948214.png)
+
+   <br>
+
+3. Movie List 출력 수정
+
+   - `forloop.counter`
+     - 현재까지 실행한 루프카운트 (1부터 시작)
+   - `forloop.counter()`
+     - 현재까지 실행한 루프카운트 (0부터 시작)
+
+   - `forloop.counter|divisibleby:3`
+     - `divisibleby:<int>`  : 나뉘어지면 True 리턴
+
+   <br>
+
+현재 forloop.counter 적용으로 counter가 3으로 나뉘어질때마다 div를 새로 만들어 3개의 컬럼이 만들어진 상태이다. 그리고 3으로 나뉘어지지 않으면 wrapper 클래스의 마지막 요소에 div를 append하는 방식으로  movieList를 보여주고 있다. 이러면 영화가 늘어날 때 컬럼이 지속적으로 늘어나며 컬럼을 3개로만 고정시키고자 하는 나의 의도와 맞지 않다. forloop.counter()를 뒤늦게 발견했는데 루프카운트가 0부터 시작하면 divisibleby적용이 쉬워져서 컬럼을 3개로 고정시킬 수 있을것같다. 시간이 늦었으니 내일...
+
+```django
+
+    <!-- Thumbnails -->
+      <section class="thumbnails">
+      </section> 
+
+      <script type="text/javascript">
+        $(document).ready(function() { 
+        {% for movie in movies %}
+          {% if forloop.counter|divisibleby:3 or forloop.counter == 1 %}  
+            var div = "";
+            div += '<div class="wrapper">';
+            div += '<a href="{% url 'movies:detail' movie.pk %}">';
+            div += '<img src="{{ movie.poster_url }}" alt="" />';
+            div += '<h3>{{ movie.title }}</h3>';
+            div += '<h3>{{ movie.score }}</h3></a></div>';
+            $(".thumbnails").append(div);
+          {% else %}
+            var div = "";
+            div += '<a href="{% url 'movies:detail' movie.pk %}">';
+            div += '<img src="{{ movie.poster_url }}" alt="" />';
+            div += '<h3>{{ movie.title }}</h3>';
+            div += '<h3>{{ movie.score }}</h3></a>';
+            $(".wrapper:last").append(div);
+          {% endif %}
+        {% endfor %}
+        });
+```
+
+
+
+<br>
+
+> ![1573489648658](images/1573489648658.png)
+
+<br>
+
+<br>
+
+4. Django 내장 템플릿 태그 & 필터
+
+   >- <https://himanmengit.github.io/django/2018/02/23/Built-In-Template-Filter.html>
+   >
+   >- <http://frontend.diffthink.kr/2019/01/book-4-django_13.html>
+

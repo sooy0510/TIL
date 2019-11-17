@@ -693,6 +693,8 @@ path('<int:article_pk>/delete/', views.delete), # DELETE Logic
   <hr>
   {% endfor %}
   
+  ```
+
 {% endblock  %}
   ```
   
@@ -716,24 +718,14 @@ path('<int:article_pk>/delete/', views.delete), # DELETE Logic
     #return redirect(f'/articles/{article.pk}/')    # 1. 하드코딩
     return redirect('articles:detail', article.pk)  # 2. URL namespace
   ```
+
   
-  
 
 <br>
 
 <br>
 
 <br>
-
-
-
-# github 이미지 업로드
-
-- 상대경로로 설정(`./images`)
-
-![1572416700647](images/1572416700647.png)
-
-
 
 
 
