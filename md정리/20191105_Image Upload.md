@@ -215,9 +215,15 @@
   ```python
   # settings.py
   
-  MEDIA_URL = '/media/'
+  # Media files
+  # 업로드된 파일의 주소를 만들어주는 역할
+MEDIA_URL = '/media/'
+  # 실제로 파일이 업로드된 다음에 어디로 배치될 것인지 경로를 정하는 설정
+# 일반적으로는 media폴더에 배치
   MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 ```
+  
+<br>
   
 <br>
   
@@ -225,11 +231,11 @@
   
 > ![1572953396865](images/1572953396865.png)
   
-<br>
+  <br>
   
-- 여전히 파일은 `root`에 저장된다
+  - 여전히 파일은 `root`에 저장된다
   
-> ![1572953589234](images/1572953589234.png)
+  > ![1572953589234](images/1572953589234.png)
   
   
 
