@@ -8,10 +8,12 @@
   {% for movie in movies %}
     <div class="col-12 col-md-6 mb-3">
       <div class="card">
-        <div class="card-body">
+        <div class="card-body" style="text-align:center;>
           <h5 class="card-title">{{ movie.title }}</h5>
-          <img src="{{ movie.poster.url }}" alt="...">
-          <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary">{{ movie.title }}</a>
+          <br>
+          <img src="{{ movie.poster.url }}" alt="..." width="100px" height="100px">
+          <br>
+          <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary">상세보기</a>
         </div>
       </div>
     </div>
