@@ -18,7 +18,7 @@ numbers             // [1,2,3,4,5]
 numbers.push('a')   // 6
 numbers             // [1,2,3,4,5,'a']
 
-// pop - 배열 가장 마지막 요소 제거 후 return 
+// pop - 배열 가장 마지막 요소 제거 후, 제거 요소 return 
 numbers.pop()       // 'a'
 numbers             // [1,2,3,4,5]
 
