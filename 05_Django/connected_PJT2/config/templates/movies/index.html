@@ -4,10 +4,18 @@
 글 생성
 <a href="{% url 'movies:create' %}">[NEW]</a>
 <hr>
-<div class="row">
+<div class="row" >
   {% for movie in movies %}
-    [{{ movie.pk }}] <a href="{% url 'movies:detail' movie.pk %}">{{ movie.title }}</a> 
+    <div class="col-12 col-md-6 mb-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ movie.title }}</h5>
+          <img src="{{ movie.poster.url }}" alt="...">
+          <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary">{{ movie.title }}</a>
+        </div>
+      </div>
+    </div>
     <hr>
   {% endfor %}
-</div>
+</div>  
 {% endblock %}
