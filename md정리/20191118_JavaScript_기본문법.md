@@ -1156,5 +1156,227 @@ console.log(areas)
 
 <br>
 
-- arr.map(callback(element))
-- 
+- `arr.map(callback(element))`
+- 배열 내의 모든 요소에 대하여 주어진 콜백 함수를 호출한 결과를 모아 새로운 배열 return
+- `map`, `filter` 둘 다 사본을 return 하고 **원본은 바뀌지 않음**
+  - 만약, **return 을 안 적으면 undefined가 발생**함
+
+<br>
+
+<br>
+
+### [ 실습 1 ] 숫자가 담긴 배열의 요소에 각각 2를 곱하여 새로운 배열 만들기
+
+-  ES6 이전
+
+  ```javascript
+  // ES5
+  
+  var numbers = [1, 2, 3]
+  var doubleNumbers = []
+  
+  for (var i = 0; i < numbers.length; i++) {
+    doubleNumbers.push(numbers[i] * 2)
+  }
+  console.log(doubleNumbers)
+  console.log(numbers) // 원본 유지
+  ```
+
+  <br>
+
+  > ![1574134339255](images/1574134339255.png)
+
+<br>
+
+- ES6 이후
+
+  ```javascript
+  // ES6+
+  const NUMBERS = [1, 2, 3]
+  
+  // 1. 일반적인 함수
+  const DOUBLENUMBERS = NUMBERS.map(function (number) {
+    return number * 2
+  })
+  
+  // 2. 화살표 함수
+  const DOUBLENUMBERS = NUMBERS.map(number => number * 2)
+  
+  console.log(DOUBLENUMBERS)
+  console.log(NUMBERS)
+  ```
+
+  <br>
+
+  > ![1574134781937](images/1574134781937.png)
+
+<br>
+
+<br>
+
+### [ 실습 2 ] map 헬퍼를 사용해서 images 배열 안의 객체들의 height 들만 저장되어있는 배열을 만들어보자
+
+- #### images 배열
+
+  ```javascript
+  const images = [{
+    height: '34px',
+    width: '59px'
+  }, {
+    height: '11px',
+    width: '35px'
+  }, {
+    height: '87px',
+    width: '19px'
+  }]
+  ```
+
+<br>
+
+- height 들만 저장되어있는 배열
+
+  ```javascript
+  const heights = images.map(image => image.height)
+  console.log(heights)
+  ```
+
+  <br>
+
+  > ![1574135038536](images/1574135038536.png)
+
+<br>
+
+<br>
+
+### [ 실습 3 ] map 헬퍼를 사용해서 "distance/time = 속도"를 저장하는 새로운 배열 speeds를 만들어보자
+
+- #### trips
+
+  ```javascript
+  const trips = [{
+    distance: 34,
+    time: 15
+  }, {
+    distance: 64,
+    time: 18
+  }, {
+    distance: 96,
+    time: 34
+  }]
+  ```
+
+  <br>
+
+- #### speeds
+
+  ```javascript
+  const speeds = trips.map(trip => trip.distance / trip.time)
+  console.log(speeds)
+  ```
+
+  <br>
+
+  > ![1574135227977](images/1574135227977.png)
+
+  
+
+<br>
+
+<br>
+
+<br>
+
+## 13. `filter`
+
+> 10_filter.js 참고
+
+<br>
+
+- `arr.filter(callback(element))`
+
+- 주어진 callback 함수의 **테스트를 통과하는 모든 요소**를 모아서 새로운 배열로 반환
+  - 즉, callback 함수에 조건을 적어서 **원하는 요소들만** **filtering**
+
+<br>
+
+### 13.1 for loop 활용해서 원하는 요소로 새 배열 만들기
+
+```javascript
+var students = [{
+    name: '서혁진',
+    type: 'male'
+  },
+  {
+    name: '이도현',
+    type: 'female'
+  }, {
+    name: '황민승',
+    type: 'male'
+  }, {
+    name: '공선아',
+    type: 'female'
+  }
+]
+
+
+var strongStudents = []
+for (var i = 0; i < students.length; i++) {
+  if (students[i].type === 'female') {
+    strongStudents.push(students[i])
+  }
+}
+console.log(students) // 원본 유지
+console.log(strongStudents) // 새로운 배열
+console.log(students[1].name) // 객체 내 속성 접근
+```
+
+<br>
+
+> ![1574135886704](images/1574135886704.png)
+
+<br>
+
+<br>
+
+### 13.2 filter 활용하기
+
+- #### STUDENTS 배열
+
+  ```javascript
+  const STUDENTS = [{
+      name: '서혁진',
+      type: 'male'
+    },
+    {
+      name: '이도현',
+      type: 'female'
+    }, {
+      name: '황민승',
+      type: 'male'
+    }, {
+      name: '공선아',
+      type: 'female'
+    }
+  ]
+  ```
+
+  <br>
+
+- **type이 female인 요소만 뽑기**
+
+  > STUDENTS 배열의 객체들 중 type이 femail인 요소만 뽑기
+  >
+  > STUDENTS 배열 자체를 바꾸고 싶은 것이 아니라, 원하는 조건에 맞는 새로운 배열을 만들어보자
+
+  <br>
+
+  ```javascript
+  const STUDENTS1 = STUDENTS.filter(function (student) {
+    return student.type === 'female'
+  })
+  console.log(STUDENTS1)
+  ```
+
+  <br>
+
+  > ![1574136332313](images/1574136332313.png)
