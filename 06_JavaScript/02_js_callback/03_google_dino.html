@@ -32,50 +32,7 @@
       console.log('아야!')
     })
     
-    // 브라우저 전체 선택
-    // 문서 전체에 키 입력을 확인하는 이벤트 리스너 등록
-    let x = 0
-    let y = 0
-    document.addEventListener('keydown', function(e){
-      //console.log(e)
-      if(e.code === 'ArrowUp'){
-        console.log('Up')
-        y += 20
-        dino.style.marginBottom = `${y}px`
-      }else if (e.code === 'ArrowDown'){
-        console.log('Down')
-        y -= 20
-        dino.style.marginBottom = `${y}px`
-      }else if (e.code === 'ArrowLeft'){
-        console.log('Left')
-        x -= 20
-        dino.style.marginLeft = `${x}px`
-      }else if (e.code === 'ArrowRight'){
-        console.log('Right')
-        x += 20
-        dino.style.marginLeft = `${x}px`
-      }else if (e.code === 'Space'){
-        console.log('Spacebar')
-        alert('크아아앙')
-      }else{
-        alert('방향키와 스페이스바만 이용해 주세요!')
-      }
-    })
 
-    // 움직이는 공룡
-    dino.style.position = 'absolute'
-    dino.addEventListener('mouseover', function(){
-      // [현재 윈도우 너비 * 난수] - [현재 윈도우 너비 / 2]
-      const newWidth = window.innerWidth * Math.random() - 
-      window.innerWidth / 2
-      // 높이
-      const newHeight = window.innerHeight * Math.random() - 
-      window.innerHeight / 2
-
-      // dino의 마진 값을 새롭게 할당
-      dino.style.marginLeft = newWidth + 'px'
-      dino.style.marginTop = newHeight + 'px'
-    })
   </script>
 </body>
 </html>
