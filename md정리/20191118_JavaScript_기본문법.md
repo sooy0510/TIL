@@ -1144,3 +1144,17 @@ console.log(areas)
 
 > ![1574068479876](images/1574068479876.png)
 
+<br>
+
+<br>
+
+<br>
+
+## 12. Map
+
+> 09_map.js 참고
+
+<br>
+
+- arr.map(callback(element))
+- 
