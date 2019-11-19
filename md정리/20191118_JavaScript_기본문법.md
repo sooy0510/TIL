@@ -1417,4 +1417,130 @@ console.log(newNumbers)
 <br>
 
 - `arr.reduce(callback(acc, element, index))`
+
   - acc : 누적값 ( 전 단계의 결과문)
+  - element : 현재 배열 요소
+  - index : 배열 순서 (인덱스 번호)
+
+  <br>
+
+- 배열의 각 요소에 대해 주어진 callback 함수를 실행하고 하나의 결과값을 반환함
+
+  - **배열 내의 숫자의 총합, 평균 계산 등 배열의 값을 하나로 줄이는 동작 수행**
+
+  <br>
+
+- `map`은 배열의 각 요소를 변형했다면, **reduce는 배열 자체를 변형**함
+
+- `map`, `filter` 등 여러 메소드들의 동작을 대부분 대체 가능
+
+<br>
+
+### [ 실습 ] tests배열에 있는 모든 점수의 합을 구해보자
+
+```javascript
+const tests = [90, 80, 77, 13, 58]
+
+// 1. 일반 함수
+const sum1 = tests.reduce(function (total, score) {
+  return total += score
+})
+console.log(sum1)
+
+// 2.화살표 함수
+const sum2 = test.reduce((total, score) => total += score)
+console.log(sum2)
+```
+
+<br>
+
+> ![1574145841295](images/1574145841295.png)
+
+<br>
+
+<br>
+
+<br>
+
+## 15. `find`
+
+> 12_find.js 참고
+
+<br>
+
+### 15.1 for문 사용
+
+```javascript
+var students = [{
+  name: '서혁진',
+  age: 26
+}, {
+  name: '오은애',
+  age: 25
+}, {
+  name: '이도현',
+  age: 25
+}, {
+  name: '공선아',
+  age: 25
+}, {
+  name: '최주현',
+  age: 27
+}]
+
+var student;
+
+for (var i = 0; i < students.length; i++) {
+  if (students[i].age === 25) {
+    student = students[i]
+    break // 원하는 조건에 도달하면 loop 탈출
+  }
+}
+
+console.log(student)
+```
+
+<br>
+
+> ![1574146070572](images/1574146070572.png)
+
+<br>
+
+<br>
+
+### 15.2  find 활용하기
+
+```javascript
+const STUDENTS = [{
+  name: '서혁진',
+  age: 26
+}, {
+  name: '오은애',
+  age: 25
+}, {
+  name: '이도현',
+  age: 25
+}, {
+  name: '공선아',
+  age: 25
+}, {
+  name: '최주현',
+  age: 27
+}]
+
+// 1. 일반 함수
+const s1 = STUDENTS.find(function (student) {
+  return student.age === 27
+})
+
+// 2. 화살표 함수
+const s2 = STUDENTS.find(student => student.age === 27)
+
+console.log(s1)
+console.log(s2)
+```
+
+<br>
+
+> ![1574146261954](images/1574146261954.png)
+
