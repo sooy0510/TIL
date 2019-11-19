@@ -1371,12 +1371,50 @@ console.log(students[1].name) // 객체 내 속성 접근
   <br>
 
   ```javascript
+  // 1. 일반 함수
   const STUDENTS1 = STUDENTS.filter(function (student) {
     return student.type === 'female'
   })
-  console.log(STUDENTS1)
+  console.log(STUDENTS) 	// 원본 유지
+  console.log(STUDENTS1)	// 새로운 배열
+  
+  // 2. 화살표 함수
+  const STUDENTS2 = STUDENTS.filter(student => student.type === 'female')
+  console.log(STUDENTS) 	// 원본 유지
+  console.log(STUDENTS2) 	// 새로운 배열
   ```
 
   <br>
 
-  > ![1574136332313](images/1574136332313.png)
+  > ![1574139631250](images/1574139631250.png)
+
+<br>
+
+<br>
+
+### [ 실습 ] filter를 사용해서 numbers 배열 중 50보다 큰 값만 필터링해서 새 배열에 저장하기
+
+```javascript
+const numbers = [15, 30, 8, 4, 68, 1, 11, 88, 76, 54, 5]
+const newNumbers = numbers.filter(number => number > 50)
+console.log(newNumbers)
+```
+
+<br>
+
+> ![1574139813233](images/1574139813233.png)
+
+<br>
+
+<br>
+
+<br>
+
+## 14. Reduce
+
+> 11_reduce.js 참고
+
+<br>
+
+- `arr.reduce(callback(acc, element, index))`
+  - acc : 누적값 ( 전 단계의 결과문)

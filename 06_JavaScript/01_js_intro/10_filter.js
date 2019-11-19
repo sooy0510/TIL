@@ -50,13 +50,14 @@ const STUDENTS = [{
 // const STUDENTS1 = STUDENTS.filter(function (student) {
 //   return student.type === 'female'
 // })
+// console.log(STUDENTS)
 // console.log(STUDENTS1)
 
-const STUDENTS2 = STUDENTS.filter(student => student.type === 'female')
-console.log(STUDENTS) // 원본 유지
-console.log(STUDENTS2) // 새로운 배열
+// const STUDENTS2 = STUDENTS.filter(student => student.type === 'female')
+// console.log(STUDENTS) // 원본 유지
+// console.log(STUDENTS2) // 새로운 배열
 
-// // filter를 사용해서 numbers 배열 중 50보다 큰 값만 필터링해서 새로운 배열에 저장하기
-// const numbers = [15, 30, 8, 4, 68, 1, 11, 88, 76, 54, 5]
-// const newNumbers = numbers.filter(number => number > 50)
-// console.log(newNumbers)
+// filter를 사용해서 numbers 배열 중 50보다 큰 값만 필터링해서 새로운 배열에 저장하기
+const numbers = [15, 30, 8, 4, 68, 1, 11, 88, 76, 54, 5]
+const newNumbers = numbers.filter(number => number > 50)
+console.log(newNumbers)
