@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block body %}
+{% if request.resolover_match.url_name == 'create' %}
+  <h1 class="text-center">CREATE</h1>
+{% else %}
+  <h1 class="text-center">UPDATE</h1>
+{% endif %}
+<!-- <form action="{% url 'articles:create' %}" method="POST"></form> -->
+<!-- RESTful하게 통합했으면 form action은 get요청을 보낸 주소로 보내진다 -->
+<form action="" method="POST">
+  {% csrf_token %}
+  {% bootstrap_form form layout='inline' %}
+<!-- 각각의 input 태그를 p태그로 감싸라-->  
+  {% comment %} {{ form.as_p }} {% endcomment %}
+  <!-- <input type="submit" value="등록☆"> -->
+  <div class="text-center">
+    {% buttons submit='제출' reset='초기화' %}
+    {% endbuttons %}
+  </div>
+</form>
+<hr>
+{% if request.resolver_match.url_name == 'create' %}
+  <a href="{% url 'articles:index' %}">[BACK]</a>
+{% else %}
+  <a href="{% url 'articles:detail' article.pk %}">[BACK]</a>
+{% endif %}
+
+{% endblock  %}
