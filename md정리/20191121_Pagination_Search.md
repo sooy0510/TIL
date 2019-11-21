@@ -282,3 +282,28 @@
   - 실행화면( `forloop` ) : forloop가 가지고 있는 정보들 출력
 
     > ![1574309334722](images/1574309334722.png)
+
+<br>
+
+<br>
+
+### 2.3 누른 페이지 표시하기
+
+- 페이지 index와 클릭한 페이지 번호가 같으면 `li` class 활성화 시키기
+
+  ```django
+  <!-- articles/index.html -->
+  
+  ...
+  <!-- 페이지 버튼 -->
+  {% for num in articles.paginator.page_range %}
+  	<li class="page-item {% if num ==  articles.number %}active{% endif %}">
+      <a class="page-link" href="{% url 'articles:index' %}?page={{ num }}">{{ num }}</a>
+  	</li>
+  {% endfor %}
+  ...
+  ```
+
+  <br>
+
+  > ![1574325249368](images/1574325249368.png)
