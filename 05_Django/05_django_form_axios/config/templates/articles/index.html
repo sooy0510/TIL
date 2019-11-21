@@ -5,12 +5,12 @@
 <a href="{% url 'articles:create' %}">New</a>
 <hr>
 
-<form class="mb-4"><!-- margin bottom -->
-  <div class="form-row justify-content-right">
+<form class="mb-4" action="{% url 'articles:search' %}"><!-- margin bottom -->
+  <div class="form-row justify-content-center">
     <div class="mb-2 col-12 col-sm-9 col-md-10">
-      <input type="text" class="form-control" placeholder="First name">
+      <input type="text" name="query" class="form-control" placeholder="제목을 입력해주세요">
     </div>
-    <div class="col-12 col-sm-3 col-md-2">
+    <div class="col-8 col-sm-3 col-md-2">
       <input type="submit" class="form-control btn btn-success" value="검색">
     </div>
   </div>

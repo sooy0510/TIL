@@ -24,13 +24,13 @@ def index(request):
 
   # 1. articles를 Paginator에 넣기
   # - Paginator(전체 리스트, 보여줄 갯수)
-  paginator = Paginator(articles, 2)
+  paginator = Paginator(articles, 4)
   # 2. 사용자가 요청한 page 가져오기
   page = request.GET.get('page')
   # 3. 해당하는 page의 article만 가져오기
   articles = paginator.get_page(page)
-  print(dir(articles))
-  print(dir(articles.paginator))
+  #print(dir(articles))
+  #print(dir(articles.paginator))
 
   context = {
     'articles':articles,
@@ -278,3 +278,17 @@ def hashtag(request, hash_pk):
   }
 
   return render(request, 'articles/hashtag.html', context)
+
+
+def search(request):
+  # 1. 사용자가 입력한 검색어 가져오기
+  query = request.GET.get('query')
+  # 2. DB에서 query가 포함된 제목을 가진 article 가져오기
+  # orm에 LIKE와 비슷한 두가지 함수가잇다
+  # __contains : 지정한 문자열 포함하는 자료 검색
+  # __icontains : 지정한 문자열 포함하는 자료 검색(대소문자 구별 x)
+  articles = Article.objects.filter(title__icontains=query)
+  # 3. context로 전달
+  context = {'articles':articles}
+
+  return render(request, 'articles/search.html', context)
