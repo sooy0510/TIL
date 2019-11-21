@@ -191,43 +191,94 @@
 
 <br>
 
-- `mb-2 ` : margin-bottom 2
+- **index.html**
 
-- `{{ forloop.counter }} ` : for문에 들어온 data 순서대로 index를 보여준다
+  - `mb-4` : margin-bottom 4
 
-- `badge` 에는 댓글수를 보여준다
+  - `col` 의 구성 
 
-  ```django
-  <!-- articles/search.html -->
-  
-  {% extends 'base.html' %}
-  
-  {% block body %}
-  <h1>검색 결과</h1>
-  <hr>
-    <ul class="list-group">
-      {% for article in articles %}
-        <a href="{% url 'articles:detail' article.pk %}" class="mb-2">
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          [{{ forloop.counter }}] {{ article.title }}
-          <span class="badge badge-warning badge-pill">
-            {{ article.comment_set.all|length }}
-          </span>
-        </li>
-      </a>
-      {% endfor %}
-    </ul>
-  {% endblock  %}
-  ```
+    > **Bootstrap Grid System :  https://poiemaweb.com/bootstrap-grid-system** 
+    >
+    > <br>
+    >
+    > ![1574311310540](images/1574311310540.png)
+
+    <br>
+
+    ```django
+    <!-- articles/index.html -->
+    
+    <form class="mb-4" action="{% url 'articles:search' %}">
+      <div class="form-row justify-content-center">
+        <div class="mb-2 col-12 col-sm-9 col-md-10">
+          <input type="text" name="query" class="form-control" placeholder="제목을 입력해주세요">
+        </div>
+        <div class="col-8 col-sm-3 col-md-2">
+          <input type="submit" class="form-control btn btn-success" value="검색">
+        </div>
+      </div>
+    </form>
+    ```
+
+    <br>
+
+  - 실행화면 (`col-12` 적용됨)
+
+    <br>
+
+    > ![1574311920461](images/1574311920461.png)
+
+    <br>
+
+  - 실행화면 (`col-sm-9` 적용됨) => 현재 window width='555'으로 `col-sm` 의 breakpoint미만이므로 stack처럼 쌓인다!
+
+    <br>
+
+    > ![1574312267154](images/1574312267154.png)
 
   <br>
 
-- 실행화면( `forloop.counter` ) : index 출력
+  <br>
 
-  > ![1574309109932](images/1574309109932.png)
+- **search.html**
 
-<br>
+  - `{{ forloop.counter }} ` : for문에 들어온 data 순서대로 index를 보여준다
 
-- 실행화면( `forloop` ) : forloop가 가지고 있는 정보들 출력
+  - `badge` 에는 댓글수를 보여준다
 
-  ![1574309334722](images/1574309334722.png)
+    ```django
+    <!-- articles/search.html -->
+    
+    {% extends 'base.html' %}
+    
+    {% block body %}
+    <h1>검색 결과</h1>
+    <hr>
+      <ul class="list-group">
+        {% for article in articles %}
+          <a href="{% url 'articles:detail' article.pk %}" class="mb-2">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            [{{ forloop.counter }}] {{ article.title }}
+            <span class="badge badge-warning badge-pill">
+              {{ article.comment_set.all|length }}
+            </span>
+          </li>
+        </a>
+        {% endfor %}
+      </ul>
+    {% endblock  %}
+    ```
+
+    <br>
+
+  - 실행화면( `forloop.counter` ) : index 출력
+
+    <br>
+
+    > ![1574309109932](images/1574309109932.png)
+
+    <br>
+
+  - 실행화면( `forloop` ) : forloop가 가지고 있는 정보들 출력
+
+    > ![1574309334722](images/1574309334722.png)
