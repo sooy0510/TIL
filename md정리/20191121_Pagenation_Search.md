@@ -191,9 +191,15 @@
 
 <br>
 
-- mb-2
+- `mb-2 ` : margin-bottom 2
+
+- `{{ forloop.counter }} ` : for문에 들어온 data 순서대로 index를 보여준다
+
+- `badge` 에는 댓글수를 보여준다
 
   ```django
+  <!-- articles/search.html -->
+  
   {% extends 'base.html' %}
   
   {% block body %}
@@ -203,7 +209,7 @@
       {% for article in articles %}
         <a href="{% url 'articles:detail' article.pk %}" class="mb-2">
         <li class="list-group-item d-flex justify-content-between align-items-center">
-          <!--[{{ forloop.counter }}] -->>{{ article.title }}
+          [{{ forloop.counter }}] {{ article.title }}
           <span class="badge badge-warning badge-pill">
             {{ article.comment_set.all|length }}
           </span>
@@ -216,7 +222,12 @@
 
   <br>
 
-- 실행화면
+- 실행화면( `forloop.counter` ) : index 출력
 
-  > ![1574304198201](images/1574304198201.png)
+  > ![1574309109932](images/1574309109932.png)
 
+<br>
+
+- 실행화면( `forloop` ) : forloop가 가지고 있는 정보들 출력
+
+  ![1574309334722](images/1574309334722.png)
