@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,9 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '86c=&ls60kbkb+==-2f&-98ap*9nvk7w6_z(8^l5^4n+y=l+7*'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -144,3 +146,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # 로그인 후 리다이렉트 경로 => 로그인 끝나면 index로 보내버렷ㄴ
 LOGIN_REDIRECT_URL = 'articles:index'
+
+# heroku settings
+import django_heroku
+django_heroku(locals())
