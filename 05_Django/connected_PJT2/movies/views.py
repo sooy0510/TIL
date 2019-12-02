@@ -11,6 +11,13 @@ def index(request):
   }
   return render(request, 'movies/index.html', context)
 
+def index2(request):
+  movies = Movie.objects.all()
+  context = {
+    'movies':movies,
+  }
+  return render(request, 'movies/index2.html', context)
+
 
 def create(request):
   if request.method == 'POST':
